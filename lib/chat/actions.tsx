@@ -119,45 +119,45 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   }
 }
 
-async function utilChat(chat: any, text: any) {
+async function utilChat(chat: any, text: any, status: any) {
   const reader = chat.body.getReader()
   let decoder = new TextDecoder()
   while (true) {
     const { done, value } = await reader.read()
-
-    if (done) {
-      break
-    }
-
-    const chunk: any = decoder
-      .decode(value, { stream: true })
-      .trim()
-      .split('\n')
-    try {
-      for (const decodedChunk of chunk) {
-        if (!decodedChunk) {
-          continue
-        }
+    const chunk = decoder.decode(value, { stream: true }).split('\n')
+    if (done) break
+    for (const decodedChunk of chunk) {
+      if (!decodedChunk) {
+        continue
+      }
+      try {
         const parsedChunk = JSON.parse(decodedChunk)
+        if (parsedChunk?._type === 'done') {
+          break
+        }
         switch (parsedChunk._type) {
           case 'response': {
-            text.append(parsedChunk.response)
+            text.append(<>{parsedChunk.response}</>)
             break
           }
           case 'function_call': {
-            text.append(`\n[Calling function: ${parsedChunk.functionName}]`)
+            text.append(
+              <>{`\n[Calling function: ${parsedChunk.functionName}]\n`}</>
+            )
             break
           }
           case 'function_fetch': {
-            text.append(`\n>> Done\n`)
+            text.append(<>{`\n>> Done\n`}</>)
             break
           }
         }
+      } catch (e) {
+        continue
       }
-    } catch (e) {
-      console.log('Error parsing chunk', e, chunk)
     }
   }
+  text.done()
+  status.done()
 }
 
 async function submitUserMessage(content: string) {
@@ -184,7 +184,7 @@ async function submitUserMessage(content: string) {
       if (!chat.ok) {
         throw new Error('Failed to fetch data')
       }
-      await utilChat(chat, text)
+      await utilChat(chat, text, status)
     } else {
       const init = await fetch(
         'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/start',
@@ -217,11 +217,8 @@ async function submitUserMessage(content: string) {
       if (!chat.ok) {
         throw new Error('Failed to fetch data')
       }
-      await utilChat(chat, text)
+      await utilChat(chat, text, status)
     }
-
-    status.done()
-    text.done()
   })()
   return {
     id: nanoid(),
