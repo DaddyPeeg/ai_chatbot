@@ -119,9 +119,10 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   }
 }
 
-async function utilChat(chat: any, text: any, status: any) {
+async function utilChat(chat: any, text: any) {
   const reader = chat.body.getReader()
   let decoder = new TextDecoder()
+  text.update('')
   while (true) {
     const { done, value } = await reader.read()
     const chunk = decoder.decode(value, { stream: true }).split('\n')
@@ -157,14 +158,12 @@ async function utilChat(chat: any, text: any, status: any) {
     }
   }
   text.done()
-  status.done()
 }
 
 async function submitUserMessage(content: string) {
   'use server'
-  const status = createStreamableUI('thread.init')
   const text = createStreamableUI('')
-
+  text.update(<SpinnerMessage />)
   ;(async () => {
     if (THREAD_ID !== '') {
       const restructuredObject = {
@@ -184,7 +183,7 @@ async function submitUserMessage(content: string) {
       if (!chat.ok) {
         throw new Error('Failed to fetch data')
       }
-      await utilChat(chat, text, status)
+      await utilChat(chat, text)
     } else {
       const init = await fetch(
         'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/start',
@@ -198,6 +197,7 @@ async function submitUserMessage(content: string) {
       if (!init.ok) {
         return
       }
+
       const initData = await init.json()
       THREAD_ID = initData.sessionID
       const restructuredObject = {
@@ -217,7 +217,7 @@ async function submitUserMessage(content: string) {
       if (!chat.ok) {
         throw new Error('Failed to fetch data')
       }
-      await utilChat(chat, text, status)
+      await utilChat(chat, text)
     }
   })()
   return {
