@@ -34,6 +34,10 @@ export function BotMessage({
 }) {
   const text = useStreamableText(content)
 
+  if (!text) {
+    return <SpinnerMessage />
+  }
+
   return (
     <div className={cn('group relative flex items-start md:-ml-12', className)}>
       <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">

@@ -10,7 +10,7 @@ import { ChatShareDialog } from '@/components/chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
-import { UserMessage } from './stocks/message'
+import { BotMessage, UserMessage } from './stocks/message'
 
 export interface ChatPanelProps {
   id?: string
@@ -37,23 +37,18 @@ export function ChatPanel({
   const exampleMessages = [
     {
       heading: 'What are the',
-      subheading: 'trending memecoins today?',
-      message: `What are the trending memecoins today?`
+      subheading: 'available health insurance plans in my area?',
+      message: `What are the available health insurance plans in my area?`
     },
     {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
+      heading: 'Who are the',
+      subheading: 'available healthcare providers near me?',
+      message: 'Who are the available healthcare providers near me?'
     },
     {
-      heading: 'I would like to buy',
-      subheading: '42 $DOGE',
-      message: `I would like to buy 42 $DOGE`
-    },
-    {
-      heading: 'What are some',
-      subheading: `recent events about $DOGE?`,
-      message: `What are some recent events about $DOGE?`
+      heading: 'What healthcare options',
+      subheading: 'are available in the state of Texas?',
+      message: `What health care options are available in the state of Texas?`
     }
   ]
 
@@ -88,7 +83,12 @@ export function ChatPanel({
 
                   setMessages(currentMessages => [
                     ...currentMessages,
-                    responseMessage
+                    {
+                      id: responseMessage.id,
+                      display: (
+                        <BotMessage content={responseMessage.newDisplay} />
+                      )
+                    }
                   ])
                 }}
               >
