@@ -3,123 +3,23 @@ import 'server-only'
 import {
   createAI,
   createStreamableUI,
-  getMutableAIState,
+  createStreamableValue,
   getAIState,
-  streamUI,
-  createStreamableValue
+  getMutableAIState
 } from 'ai/rsc'
-import { openai } from '@ai-sdk/openai'
-
-import {
-  spinner,
-  BotCard,
-  BotMessage,
-  SystemMessage,
-  Stock,
-  Purchase
-} from '@/components/stocks'
+import { BotCard, BotMessage, Stock, Purchase } from '@/components/stocks'
 
 import { z } from 'zod'
-import { EventsSkeleton } from '@/components/stocks/events-skeleton'
 import { Events } from '@/components/stocks/events'
-import { StocksSkeleton } from '@/components/stocks/stocks-skeleton'
 import { Stocks } from '@/components/stocks/stocks'
-import { StockSkeleton } from '@/components/stocks/stock-skeleton'
-import {
-  formatNumber,
-  runAsyncFnWithoutBlocking,
-  sleep,
-  nanoid
-} from '@/lib/utils'
+import { nanoid } from '@/lib/utils'
 import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat } from '@/lib/types'
 import { auth } from '@/auth'
 
 let THREAD_ID = ''
-
-async function confirmPurchase(symbol: string, price: number, amount: number) {
-  'use server'
-
-  const aiState = getMutableAIState<typeof AI>()
-
-  const purchasing = createStreamableUI(
-    <div className="inline-flex items-start gap-1 md:items-center">
-      {spinner}
-      <p className="mb-2">
-        Purchasing {amount} ${symbol}...
-      </p>
-    </div>
-  )
-
-  const systemMessage = createStreamableUI(null)
-
-  runAsyncFnWithoutBlocking(async () => {
-    await sleep(1000)
-
-    purchasing.update(
-      <div className="inline-flex items-start gap-1 md:items-center">
-        {spinner}
-        <p className="mb-2">
-          Purchasing {amount} ${symbol}... working on it...
-        </p>
-      </div>
-    )
-
-    await sleep(1000)
-
-    purchasing.done(
-      <div>
-        <p className="mb-2">
-          You have successfully purchased {amount} ${symbol}. Total cost:{' '}
-          {formatNumber(amount * price)}
-        </p>
-      </div>
-    )
-
-    systemMessage.done(
-      <SystemMessage>
-        You have purchased {amount} shares of {symbol} at ${price}. Total cost ={' '}
-        {formatNumber(amount * price)}.
-      </SystemMessage>
-    )
-
-    aiState.done({
-      ...aiState.get(),
-      messages: [
-        ...aiState.get().messages.slice(0, -1),
-        {
-          id: nanoid(),
-          role: 'function',
-          name: 'showStockPurchase',
-          content: JSON.stringify({
-            symbol,
-            price,
-            defaultAmount: amount,
-            status: 'completed'
-          })
-        },
-        {
-          id: nanoid(),
-          role: 'system',
-          content: `[User has purchased ${amount} shares of ${symbol} at ${price}. Total cost = ${
-            amount * price
-          }]`
-        }
-      ]
-    })
-  })
-
-  return {
-    purchasingUI: purchasing.value,
-    newMessage: {
-      id: nanoid(),
-      display: systemMessage.value
-    }
-  }
-}
-
-async function utilChat(chat: any, text: any) {
+async function utilChat(chat: any, text: any, newText: any) {
   const reader = chat.body.getReader()
   let decoder = new TextDecoder()
   text.update('')
@@ -139,16 +39,21 @@ async function utilChat(chat: any, text: any) {
         switch (parsedChunk._type) {
           case 'response': {
             text.append(<>{parsedChunk.response}</>)
+            newText.update(parsedChunk.response)
             break
           }
           case 'function_call': {
-            text.append(
+            text.update(
               <>{`\n[Calling function: ${parsedChunk.functionName}]\n`}</>
+            )
+            newText.update(
+              `\n[Calling function: ${parsedChunk.functionName}]\n`
             )
             break
           }
           case 'function_fetch': {
-            text.append(<>{`\n>> Done\n`}</>)
+            text.update(<>{`\n>> Done\n`}</>)
+            newText.update(`\n>> Done\n`)
             break
           }
         }
@@ -158,12 +63,13 @@ async function utilChat(chat: any, text: any) {
     }
   }
   text.done()
+  newText.done()
 }
 
 async function submitUserMessage(content: string) {
   'use server'
-  const text = createStreamableUI('')
-  text.update(<SpinnerMessage />)
+  const text = createStreamableUI(<SpinnerMessage />)
+  const newText = createStreamableValue()
   ;(async () => {
     if (THREAD_ID !== '') {
       const restructuredObject = {
@@ -183,7 +89,7 @@ async function submitUserMessage(content: string) {
       if (!chat.ok) {
         throw new Error('Failed to fetch data')
       }
-      await utilChat(chat, text)
+      await utilChat(chat, text, newText)
     } else {
       const init = await fetch(
         'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/start',
@@ -217,12 +123,13 @@ async function submitUserMessage(content: string) {
       if (!chat.ok) {
         throw new Error('Failed to fetch data')
       }
-      await utilChat(chat, text)
+      await utilChat(chat, text, newText)
     }
   })()
   return {
     id: nanoid(),
-    display: text.value
+    display: text.value,
+    newDisplay: newText.value
   }
 }
 
@@ -300,25 +207,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
     .map((message, index) => ({
       id: `${aiState.chatId}-${index}`,
       display:
-        message.role === 'function' ? (
-          message.name === 'listStocks' ? (
-            <BotCard>
-              <Stocks props={JSON.parse(message.content)} />
-            </BotCard>
-          ) : message.name === 'showStockPrice' ? (
-            <BotCard>
-              <Stock props={JSON.parse(message.content)} />
-            </BotCard>
-          ) : message.name === 'showStockPurchase' ? (
-            <BotCard>
-              <Purchase props={JSON.parse(message.content)} />
-            </BotCard>
-          ) : message.name === 'getEvents' ? (
-            <BotCard>
-              <Events props={JSON.parse(message.content)} />
-            </BotCard>
-          ) : null
-        ) : message.role === 'user' ? (
+        message.role === 'user' ? (
           <UserMessage>{message.content}</UserMessage>
         ) : (
           <BotMessage content={message.content} />
