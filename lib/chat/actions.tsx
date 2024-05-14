@@ -44,16 +44,16 @@ async function utilChat(chat: any, text: any, newText: any) {
           }
           case 'function_call': {
             text.update(
-              <>{`\n[Calling function: ${parsedChunk.functionName}]\n`}</>
+              <>{`\n[Calling function: ${parsedChunk.functionName}]\n\n`}</>
             )
             newText.update(
-              `\n[Calling function: ${parsedChunk.functionName}]\n`
+              `[Calling function: ${parsedChunk.functionName}]\n\n`
             )
             break
           }
           case 'function_fetch': {
             text.update(<>{`\n>> Done\n`}</>)
-            newText.update(`\n>> Done\n`)
+            newText.update(`>> Done\n\n`)
             break
           }
         }
