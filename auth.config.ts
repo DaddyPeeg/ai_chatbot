@@ -20,21 +20,16 @@ export const authConfig = {
 
       return true
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
-        token = { ...token, id: user.id }
+        token.user = { accessToken: user.token, username: user.username }
       }
-
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (token) {
-        const { id } = token as { id: string }
-        const { user } = session
-
-        session = { ...session, user: { ...user, id } }
+        session.user = token.user
       }
-
       return session
     }
   },

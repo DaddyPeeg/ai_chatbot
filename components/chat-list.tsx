@@ -12,7 +12,6 @@ export interface ChatList {
 }
 
 export function ChatList({ messages, session, isShared }: ChatList) {
-  // console.log(messages.display)
   if (!messages.length) {
     return null
   }
@@ -45,7 +44,9 @@ export function ChatList({ messages, session, isShared }: ChatList) {
 
       {messages.map((message: any, index: any) => (
         <div key={message.id}>
-          {message.display}
+          {message.type === 'user' && message.display}
+          {message.type === 'bot' && <BotMessage content={message.display} />}
+          {/* {message.display} */}
           {index < messages.length - 1 && <Separator className="my-4" />}
         </div>
       ))}
