@@ -66,6 +66,28 @@ async function utilChat(chat: any, text: any, newText: any) {
   newText.done()
 }
 
+async function getChatThread() {
+  'use server'
+  try {
+    const init = await fetch(
+      'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/start',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    if (!init.ok) {
+      console.log('Error Fetching Data')
+    }
+    const res = init.json()
+    return res
+  } catch (e) {
+    console.log('Error fetching data', e)
+    throw new Error('Failed to fetch data')
+  }
+}
 async function submitUserMessage(content: string) {
   'use server'
   const text = createStreamableUI(<SpinnerMessage />)
@@ -148,11 +170,13 @@ export type AIState = {
 export type UIState = {
   id: string
   display: React.ReactNode
+  type?: 'user' | 'bot'
 }[]
 
 export const AI = createAI<AIState, UIState>({
   actions: {
-    submitUserMessage
+    submitUserMessage,
+    getChatThread
   },
   initialUIState: [],
   initialAIState: { chatId: nanoid(), messages: [] },
