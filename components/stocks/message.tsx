@@ -29,11 +29,12 @@ export function BotMessage({
   content,
   className
 }: {
-  content: string | StreamableValue<string>
+  // content: string | StreamableValue<string>
+  content: string
   className?: string
 }) {
-  const text = useStreamableText(content)
-
+  // const text = useStreamableText(content)
+  const text = content
   if (!text) {
     return <SpinnerMessage />
   }
