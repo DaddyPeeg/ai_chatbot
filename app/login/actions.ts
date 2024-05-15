@@ -7,9 +7,30 @@ import { z } from 'zod'
 import { kv } from '@vercel/kv'
 import { ResultCode } from '@/lib/utils'
 
-export async function getUser(email: string) {
-  const user = await kv.hgetall<User>(`user:${email}`)
-  return user
+export async function getUser(data: { username: string; password: string }) {
+  const newdata = {
+    username: data.username,
+    password: data.password
+  }
+  try {
+    const res = await fetch(
+      'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/auth/signin',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newdata)
+      }
+    )
+    if (!res.ok) {
+      throw new Error('Error Loggin in')
+    }
+    const result = await res.json()
+    return result
+  } catch (e) {
+    throw new Error('INTERNAL_SERVER_ERROR')
+  }
 }
 
 interface Result {
@@ -22,22 +43,20 @@ export async function authenticate(
   formData: FormData
 ): Promise<Result | undefined> {
   try {
-    const email = formData.get('email')
+    const username = formData.get('username')
     const password = formData.get('password')
-
     const parsedCredentials = z
       .object({
-        email: z.string().email(),
+        username: z.string().min(1),
         password: z.string().min(6)
       })
       .safeParse({
-        email,
+        username,
         password
       })
-
     if (parsedCredentials.success) {
       await signIn('credentials', {
-        email,
+        username,
         password,
         redirect: false
       })

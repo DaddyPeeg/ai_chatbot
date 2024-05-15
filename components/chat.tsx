@@ -17,11 +17,10 @@ import useStorage from '@/lib/hooks/use-storage'
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
-  session?: Session
-  missingKeys: string[]
+  session?: any
 }
 
-export function Chat({ id, className, session, missingKeys }: ChatProps) {
+export function Chat({ id, className, session }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
@@ -59,6 +58,12 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
       const res = await getChatThread()
       setItem('chat_thread', res.sessionID)
     })()
+  }, [])
+
+  useEffect(() => {
+    if (session) {
+      router.replace('/')
+    }
   }, [])
 
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
