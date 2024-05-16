@@ -4,7 +4,7 @@ import { AI } from '@/lib/chat/actions'
 import { auth } from '@/auth'
 
 export const metadata = {
-  title: 'Next.js AI Chatbot'
+  title: 'Healthcare Chatbot'
 }
 
 export default async function IndexPage() {
