@@ -61,6 +61,7 @@ export function PromptForm({
       ref={formRef}
       onSubmit={async (e: any) => {
         e.preventDefault()
+        if (aiState.isChatting) return
 
         setAiState(prevState => ({ ...prevState, isChatting: true }))
         setIsStreaming(true)
