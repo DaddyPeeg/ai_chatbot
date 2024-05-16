@@ -38,6 +38,8 @@ export function ChatPanel({
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
 
+  console.log(aiState)
+
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
       const threadId = getItem('chat_thread', 'session')
