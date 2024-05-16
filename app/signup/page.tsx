@@ -1,10 +1,10 @@
 import { auth } from '@/auth'
-import SignupForm from '@/components/signup-form'
+// import SignupForm from '@/components/signup-form'
 import { Session } from '@/lib/types'
 import { redirect } from 'next/navigation'
 
 export default async function SignupPage() {
-  const session = (await auth()) as Session
+  const session = await auth()
 
   if (session) {
     redirect('/')
@@ -12,7 +12,8 @@ export default async function SignupPage() {
 
   return (
     <main className="flex flex-col p-4">
-      <SignupForm />
+      TODO SIGNUP
+      {/* <SignupForm /> */}
     </main>
   )
 }

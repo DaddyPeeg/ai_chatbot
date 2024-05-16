@@ -17,6 +17,7 @@ import {
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
+import useStorage from '@/lib/hooks/use-storage'
 
 export function PromptForm({
   input,
@@ -29,7 +30,10 @@ export function PromptForm({
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const { submitUserMessage } = useActions()
-  const [_, setMessages] = useUIState<typeof AI>()
+  const [messages, setMessages] = useUIState<typeof AI>()
+  const { getItem, setItem, removeItem } = useStorage()
+  const [isStreaming, setIsStreaming] = React.useState(true)
+  const hasRunEffect = React.useRef(false)
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -37,11 +41,25 @@ export function PromptForm({
     }
   }, [])
 
+  React.useEffect(() => {
+    if (!isStreaming && hasRunEffect.current) {
+      const threadId = getItem('chat_thread', 'session')
+      setItem(
+        'chat-thread-history',
+        JSON.stringify({ threadId, messages: [...messages] }),
+        'local'
+      )
+    }
+    hasRunEffect.current = true
+  }, [isStreaming])
+
   return (
     <form
       ref={formRef}
       onSubmit={async (e: any) => {
         e.preventDefault()
+
+        setIsStreaming(true)
 
         // Blur focus on mobile
         if (window.innerWidth < 600) {
@@ -57,20 +75,119 @@ export function PromptForm({
           ...currentMessages,
           {
             id: nanoid(),
-            display: <UserMessage>{value}</UserMessage>
+            display: value,
+            type: 'user'
           }
         ])
 
-        // Submit and get response message
-        const responseMessage = await submitUserMessage(value)
+        const nanoID = nanoid()
 
         setMessages(currentMessages => [
           ...currentMessages,
           {
-            id: responseMessage.id,
-            display: <BotMessage content={responseMessage.newDisplay} />
+            id: nanoID,
+            display: '',
+            type: 'bot'
           }
         ])
+
+        const thread = getItem('chat_thread')
+
+        const restructuredObject = {
+          sessionID: thread,
+          prompt: value
+        }
+        const chat: any = await fetch(
+          'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/call',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(restructuredObject)
+          }
+        )
+        if (!chat.ok) {
+          console.log('Failed to fetch data')
+          return
+        }
+        const reader = chat.body.getReader()
+        let decoder = new TextDecoder()
+        let botMessage = ''
+        while (true) {
+          const { done, value } = await reader.read()
+          const chunk = decoder.decode(value, { stream: true }).split('\n')
+          if (done) break
+          const filteredChunk = chunk.filter(entry => entry !== '')
+          for (const decodedChunk of filteredChunk) {
+            if (!decodedChunk) {
+              continue
+            }
+            try {
+              const parsedChunk = JSON.parse(decodedChunk)
+              if (parsedChunk?._type === 'done') {
+                break
+              }
+              switch (parsedChunk._type) {
+                case 'response': {
+                  botMessage += `${parsedChunk.response}`
+                  setMessages(prevMessage => {
+                    const newMessage = prevMessage.map(m => {
+                      if (m.id === nanoID) {
+                        return {
+                          ...m,
+                          display: botMessage
+                        }
+                      }
+                      return m
+                    })
+
+                    return newMessage
+                  })
+                  break
+                }
+                case 'function_call': {
+                  botMessage += `\n[Calling function: ${parsedChunk.functionName}]\n\n`
+                  setMessages(prevMessage => {
+                    const newMessage = prevMessage.map(m => {
+                      if (m.id === nanoID) {
+                        return {
+                          ...m,
+                          display: botMessage
+                        }
+                      }
+                      return m
+                    })
+
+                    return newMessage
+                  })
+                  break
+                }
+                case 'function_fetch': {
+                  botMessage += `>> Done\n\n`
+                  setMessages(prevMessage => {
+                    const newMessage = prevMessage.map(m => {
+                      if (m.id === nanoID) {
+                        return {
+                          ...m,
+                          display: botMessage
+                        }
+                      }
+                      return m
+                    })
+
+                    return newMessage
+                  })
+                  break
+                }
+              }
+            } catch (e) {
+              console.log('Something went wrong parsing JSON', e)
+              continue
+            }
+          }
+        }
+        setIsStreaming(false)
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
@@ -81,6 +198,8 @@ export function PromptForm({
               size="icon"
               className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
               onClick={() => {
+                removeItem('chat_thread', 'session')
+                removeItem('chat-thread-history', 'local')
                 router.push('/new')
               }}
             >
