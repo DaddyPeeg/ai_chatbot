@@ -40,7 +40,6 @@ export function ChatPanel({
 
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
-      console.log('wew')
       const threadId = getItem('chat_thread', 'session')
       setItem(
         'chat-thread-history',

@@ -31,7 +31,6 @@ export function Chat({ id, className, session }: ChatProps) {
   const { getItem, setItem } = useStorage()
   const hasRunEffect = useRef(false)
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
-  console.log(messages)
   useEffect(() => {
     if (session?.user) {
       if (!path.includes('chat') && messages.length === 1) {
@@ -50,10 +49,6 @@ export function Chat({ id, className, session }: ChatProps) {
   useEffect(() => {
     setNewChatId(id)
   })
-
-  // useEffect(() => {
-  //   setMessages([])
-  // }, [])
 
   useEffect(() => {
     if (hasRunEffect.current) return

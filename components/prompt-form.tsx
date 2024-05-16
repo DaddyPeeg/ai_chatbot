@@ -43,7 +43,6 @@ export function PromptForm({
 
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
-      console.log('wew')
       const threadId = getItem('chat_thread', 'session')
       setItem(
         'chat-thread-history',
@@ -126,7 +125,6 @@ export function PromptForm({
             }
             try {
               const parsedChunk = JSON.parse(decodedChunk)
-              // console.log(parsedChunk)
               if (parsedChunk?._type === 'done') {
                 break
               }
