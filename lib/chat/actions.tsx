@@ -166,6 +166,7 @@ export type Message = {
 export type AIState = {
   chatId: string
   messages: Message[]
+  isChatting: boolean
 }
 
 export type UIState = {
@@ -180,7 +181,7 @@ export const AI = createAI<AIState, UIState>({
     getChatThread
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), messages: [] },
+  initialAIState: { chatId: nanoid(), messages: [], isChatting: false },
   onGetUIState: async () => {
     'use server'
 
