@@ -3,12 +3,12 @@
 import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 
-import { useActions, useUIState } from 'ai/rsc'
+import { useActions, useAIState, useUIState } from 'ai/rsc'
 
 import { BotMessage, UserMessage } from './stocks/message'
 import { type AI } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
+import { IconArrowElbow, IconPlus, IconStop } from '@/components/ui/icons'
 import {
   Tooltip,
   TooltipContent,
@@ -31,9 +31,12 @@ export function PromptForm({
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const { submitUserMessage } = useActions()
   const [messages, setMessages] = useUIState<typeof AI>()
+  const [aiState, setAiState] = useAIState<typeof AI>()
   const { getItem, setItem, removeItem } = useStorage()
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
+
+  console.log(aiState)
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -58,7 +61,9 @@ export function PromptForm({
       ref={formRef}
       onSubmit={async (e: any) => {
         e.preventDefault()
+        if (aiState.isChatting) return
 
+        setAiState(prevState => ({ ...prevState, isChatting: true }))
         setIsStreaming(true)
 
         // Blur focus on mobile
@@ -188,6 +193,7 @@ export function PromptForm({
           }
         }
         setIsStreaming(false)
+        setAiState(prevState => ({ ...prevState, isChatting: false }))
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
@@ -225,15 +231,27 @@ export function PromptForm({
           onChange={e => setInput(e.target.value)}
         />
         <div className="absolute right-0 top-[13px] sm:right-4">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button type="submit" size="icon" disabled={input === ''}>
-                <IconArrowElbow />
-                <span className="sr-only">Send message</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Send message</TooltipContent>
-          </Tooltip>
+          {!aiState.isChatting ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button type="submit" size="icon" disabled={input === ''}>
+                  <IconArrowElbow />
+                  <span className="sr-only">Send message</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Send message</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button type="button" size="icon">
+                  <IconStop />
+                  <span className="sr-only">Stop Response</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Stop Response</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </div>
     </form>

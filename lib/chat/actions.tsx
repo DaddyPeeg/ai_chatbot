@@ -47,7 +47,7 @@ async function utilChat(chat: any, text: any, newText: any) {
               <>{`\n[Calling function: ${parsedChunk.functionName}]\n\n`}</>
             )
             newText.update(
-              `[Calling function: ${parsedChunk.functionName}]\n\n`
+              `\n[Calling function: ${parsedChunk.functionName}]\n\n`
             )
             break
           }
@@ -94,6 +94,7 @@ async function submitUserMessage(content: string) {
   const newText = createStreamableValue()
   ;(async () => {
     if (THREAD_ID !== '') {
+      console.log('THREAD SET')
       const restructuredObject = {
         sessionID: THREAD_ID,
         prompt: content
@@ -165,6 +166,7 @@ export type Message = {
 export type AIState = {
   chatId: string
   messages: Message[]
+  isChatting: boolean
 }
 
 export type UIState = {
@@ -179,7 +181,7 @@ export const AI = createAI<AIState, UIState>({
     getChatThread
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), messages: [] },
+  initialAIState: { chatId: nanoid(), messages: [], isChatting: false },
   onGetUIState: async () => {
     'use server'
 

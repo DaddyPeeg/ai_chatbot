@@ -30,13 +30,15 @@ export function ChatPanel({
   isAtBottom,
   scrollToBottom
 }: ChatPanelProps) {
-  const [aiState] = useAIState()
+  const [aiState, setAiState] = useAIState<typeof AI>()
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
   const { getItem, setItem } = useStorage()
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
+
+  console.log(aiState)
 
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
@@ -52,19 +54,25 @@ export function ChatPanel({
 
   const exampleMessages = [
     {
-      heading: 'What are the',
-      subheading: 'available health insurance plans in my area?',
+      heading: 'Insurance Plans',
+      subheading: 'What are the available health insurance plans in my area?',
       message: `What are the available health insurance plans in my area?`
     },
     {
-      heading: 'Who are the',
-      subheading: 'available healthcare providers near me?',
+      heading: 'Healthcare Providers',
+      subheading: 'Who are the available healthcare providers near me?',
       message: 'Who are the available healthcare providers near me?'
     },
     {
-      heading: 'What healthcare options',
-      subheading: 'are available in the state of Texas?',
+      heading: 'Healthcare Options',
+      subheading:
+        'What healthcare options are available in the state of Texas?',
       message: `What health care options are available in the state of Texas?`
+    },
+    {
+      heading: 'Drug Information',
+      subheading: 'Can you tell me the information for a specific medication?',
+      message: `Can you tell me the information for a specific medication?`
     }
   ]
 
@@ -85,6 +93,8 @@ export function ChatPanel({
                   index > 1 && 'hidden md:block'
                 }`}
                 onClick={async () => {
+                  if (aiState.isChatting) return
+                  setAiState(prevState => ({ ...prevState, isChatting: true }))
                   setIsStreaming(true)
                   setMessages(currentMessages => [
                     ...currentMessages,
@@ -205,6 +215,7 @@ export function ChatPanel({
                     }
                   }
                   setIsStreaming(false)
+                  setAiState(prevState => ({ ...prevState, isChatting: false }))
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>
