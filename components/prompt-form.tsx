@@ -36,8 +36,6 @@ export function PromptForm({
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
 
-  console.log(aiState)
-
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()
