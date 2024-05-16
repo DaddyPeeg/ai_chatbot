@@ -30,8 +30,10 @@ export function PromptForm({
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const { submitUserMessage } = useActions()
-  const [_, setMessages] = useUIState<typeof AI>()
-  const { getItem } = useStorage()
+  const [messages, setMessages] = useUIState<typeof AI>()
+  const { getItem, setItem } = useStorage()
+  const [isStreaming, setIsStreaming] = React.useState(true)
+  const hasRunEffect = React.useRef(false)
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -39,11 +41,26 @@ export function PromptForm({
     }
   }, [])
 
+  React.useEffect(() => {
+    if (!isStreaming && hasRunEffect.current) {
+      console.log('wew')
+      const threadId = getItem('chat_thread', 'session')
+      setItem(
+        'chat-thread-history',
+        JSON.stringify({ threadId, messages: [...messages] }),
+        'local'
+      )
+    }
+    hasRunEffect.current = true
+  }, [isStreaming])
+
   return (
     <form
       ref={formRef}
       onSubmit={async (e: any) => {
         e.preventDefault()
+
+        setIsStreaming(true)
 
         // Blur focus on mobile
         if (window.innerWidth < 600) {
@@ -59,7 +76,7 @@ export function PromptForm({
           ...currentMessages,
           {
             id: nanoid(),
-            display: <UserMessage>{value}</UserMessage>,
+            display: value,
             type: 'user'
           }
         ])
@@ -172,16 +189,7 @@ export function PromptForm({
             }
           }
         }
-        // Submit and get response message
-        // const responseMessage = await submitUserMessage(value)
-
-        // setMessages(currentMessages => [
-        //   ...currentMessages,
-        //   {
-        //     id: responseMessage.id,
-        //     display: <BotMessage content={responseMessage.newDisplay} />
-        //   }
-        // ])
+        setIsStreaming(false)
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">

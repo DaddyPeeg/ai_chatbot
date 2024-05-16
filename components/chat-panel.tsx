@@ -34,7 +34,22 @@ export function ChatPanel({
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
-  const { getItem } = useStorage()
+  const { getItem, setItem } = useStorage()
+  const [isStreaming, setIsStreaming] = React.useState(true)
+  const hasRunEffect = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!isStreaming && hasRunEffect.current) {
+      console.log('wew')
+      const threadId = getItem('chat_thread', 'session')
+      setItem(
+        'chat-thread-history',
+        JSON.stringify({ threadId, messages: [...messages] }),
+        'local'
+      )
+    }
+    hasRunEffect.current = true
+  }, [isStreaming])
 
   const exampleMessages = [
     {
@@ -71,11 +86,12 @@ export function ChatPanel({
                   index > 1 && 'hidden md:block'
                 }`}
                 onClick={async () => {
+                  setIsStreaming(true)
                   setMessages(currentMessages => [
                     ...currentMessages,
                     {
                       id: nanoid(),
-                      display: <UserMessage>{example.message}</UserMessage>,
+                      display: example.message,
                       type: 'user'
                     }
                   ])
@@ -189,20 +205,7 @@ export function ChatPanel({
                       }
                     }
                   }
-
-                  // const responseMessage = await submitUserMessage(
-                  //   example.message
-                  // )
-
-                  // setMessages(currentMessages => [
-                  //   ...currentMessages,
-                  //   {
-                  //     id: responseMessage.id,
-                  //     display: (
-                  //       <BotMessage content={responseMessage.newDisplay} />
-                  //     )
-                  //   }
-                  // ])
+                  setIsStreaming(false)
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>
