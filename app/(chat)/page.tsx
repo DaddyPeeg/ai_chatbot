@@ -11,7 +11,7 @@ export default async function IndexPage() {
   const id = nanoid()
   const session = await auth()
   return (
-    <AI initialAIState={{ chatId: id, messages: [] }}>
+    <AI initialAIState={{ chatId: id, messages: [], isChatting: false }}>
       <Chat id={id} session={session} />
     </AI>
   )
