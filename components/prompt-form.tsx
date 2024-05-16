@@ -31,7 +31,7 @@ export function PromptForm({
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const { submitUserMessage } = useActions()
   const [messages, setMessages] = useUIState<typeof AI>()
-  const { getItem, setItem } = useStorage()
+  const { getItem, setItem, removeItem } = useStorage()
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
 
@@ -200,6 +200,8 @@ export function PromptForm({
               size="icon"
               className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
               onClick={() => {
+                removeItem('chat_thread', 'session')
+                removeItem('chat-thread-history', 'local')
                 router.push('/new')
               }}
             >

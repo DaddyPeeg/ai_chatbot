@@ -65,10 +65,9 @@ export function Chat({ id, className, session }: ChatProps) {
       setItem('chat_thread', res.sessionID)
     })()
     const threadID = getItem('chat_thread', 'session')
-    const storage_chat_history = JSON.parse(
-      getItem('chat-thread-history', 'local')
-    )
-    if (!threadID || !storage_chat_history) return
+    const local_storage_items = getItem('chat-thread-history', 'local')
+    if (!threadID || !local_storage_items) return
+    const storage_chat_history = JSON.parse(local_storage_items)
     if (threadID === storage_chat_history.threadId) {
       setMessages(prev => [...prev, ...storage_chat_history.messages])
     }
