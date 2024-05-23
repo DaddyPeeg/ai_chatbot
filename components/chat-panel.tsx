@@ -12,6 +12,7 @@ import type { AI } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
 import { BotMessage, UserMessage } from './stocks/message'
 import useStorage from '@/lib/hooks/use-storage'
+import { fetchDataWithAbort } from '@/lib/utils'
 
 export interface ChatPanelProps {
   id?: string
@@ -37,6 +38,17 @@ export function ChatPanel({
   const { getItem, setItem } = useStorage()
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
+
+  const controller = React.useRef(new AbortController())
+  const signal = React.useMemo(() => {
+    return controller.current.signal
+  }, [controller.current])
+
+  const abortButtonHandler = () => {
+    controller.current.abort()
+    console.log('Fetch request manually aborted')
+    // controller.current = new AbortController()
+  }
 
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
@@ -110,7 +122,8 @@ export function ChatPanel({
                     {
                       id: nanoID,
                       display: '',
-                      type: 'bot'
+                      type: 'bot',
+                      status: true
                     }
                   ])
 
@@ -120,100 +133,14 @@ export function ChatPanel({
                     sessionID: thread,
                     prompt: example.message
                   }
-                  const chat: any = await fetch(
-                    'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/call',
-                    {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(restructuredObject)
-                    }
+                  fetchDataWithAbort(
+                    controller,
+                    restructuredObject,
+                    setMessages,
+                    nanoID,
+                    setIsStreaming,
+                    setAiState
                   )
-                  if (!chat.ok) {
-                    console.log('Failed to fetch data')
-                    return
-                  }
-                  const reader = chat.body.getReader()
-                  let decoder = new TextDecoder()
-                  let botMessage = ''
-                  while (true) {
-                    const { done, value } = await reader.read()
-                    const chunk = decoder
-                      .decode(value, { stream: true })
-                      .split('\n')
-                    if (done) break
-                    const filteredChunk = chunk.filter(entry => entry !== '')
-                    for (const decodedChunk of filteredChunk) {
-                      if (!decodedChunk) {
-                        continue
-                      }
-                      try {
-                        const parsedChunk = JSON.parse(decodedChunk)
-                        if (parsedChunk?._type === 'done') {
-                          break
-                        }
-                        switch (parsedChunk._type) {
-                          case 'response': {
-                            botMessage += `${parsedChunk.response}`
-                            setMessages(prevMessage => {
-                              const newMessage = prevMessage.map(m => {
-                                if (m.id === nanoID) {
-                                  return {
-                                    ...m,
-                                    display: botMessage
-                                  }
-                                }
-                                return m
-                              })
-
-                              return newMessage
-                            })
-                            break
-                          }
-                          case 'function_call': {
-                            botMessage += `\n[Calling function: ${parsedChunk.functionName}]\n\n`
-                            setMessages(prevMessage => {
-                              const newMessage = prevMessage.map(m => {
-                                if (m.id === nanoID) {
-                                  return {
-                                    ...m,
-                                    display: botMessage
-                                  }
-                                }
-                                return m
-                              })
-
-                              return newMessage
-                            })
-                            break
-                          }
-                          case 'function_fetch': {
-                            botMessage += `>> Done\n\n`
-                            setMessages(prevMessage => {
-                              const newMessage = prevMessage.map(m => {
-                                if (m.id === nanoID) {
-                                  return {
-                                    ...m,
-                                    display: botMessage
-                                  }
-                                }
-                                return m
-                              })
-
-                              return newMessage
-                            })
-                            break
-                          }
-                        }
-                      } catch (e) {
-                        console.log('Something went wrong parsing JSON', e)
-                        continue
-                      }
-                    }
-                  }
-                  setIsStreaming(false)
-                  setAiState(prevState => ({ ...prevState, isChatting: false }))
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>
@@ -224,7 +151,7 @@ export function ChatPanel({
             ))}
         </div>
 
-        {messages?.length >= 2 ? (
+        {/* {messages?.length >= 2 ? (
           <div className="flex h-12 items-center justify-center">
             <div className="flex space-x-2">
               {id && title ? (
@@ -251,10 +178,16 @@ export function ChatPanel({
               ) : null}
             </div>
           </div>
-        ) : null}
+        ) : null} */}
 
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
-          <PromptForm input={input} setInput={setInput} />
+          <PromptForm
+            input={input}
+            setInput={setInput}
+            signal={signal}
+            controller={controller}
+            abortButtonHandler={abortButtonHandler}
+          />
           <FooterText className="hidden sm:block" />
         </div>
       </div>

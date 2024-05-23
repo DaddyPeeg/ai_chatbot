@@ -18,13 +18,20 @@ import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
 import useStorage from '@/lib/hooks/use-storage'
+import { fetchDataWithAbort } from '@/lib/utils'
 
 export function PromptForm({
   input,
-  setInput
+  setInput,
+  signal,
+  controller,
+  abortButtonHandler
 }: {
   input: string
   setInput: (value: string) => void
+  signal: any
+  controller: any
+  abortButtonHandler: () => void
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
@@ -90,7 +97,8 @@ export function PromptForm({
           {
             id: nanoID,
             display: '',
-            type: 'bot'
+            type: 'bot',
+            status: true
           }
         ])
 
@@ -100,98 +108,14 @@ export function PromptForm({
           sessionID: thread,
           prompt: value
         }
-        const chat: any = await fetch(
-          'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/call',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(restructuredObject)
-          }
+        fetchDataWithAbort(
+          controller,
+          restructuredObject,
+          setMessages,
+          nanoID,
+          setIsStreaming,
+          setAiState
         )
-        if (!chat.ok) {
-          console.log('Failed to fetch data')
-          return
-        }
-        const reader = chat.body.getReader()
-        let decoder = new TextDecoder()
-        let botMessage = ''
-        while (true) {
-          const { done, value } = await reader.read()
-          const chunk = decoder.decode(value, { stream: true }).split('\n')
-          if (done) break
-          const filteredChunk = chunk.filter(entry => entry !== '')
-          for (const decodedChunk of filteredChunk) {
-            if (!decodedChunk) {
-              continue
-            }
-            try {
-              const parsedChunk = JSON.parse(decodedChunk)
-              if (parsedChunk?._type === 'done') {
-                break
-              }
-              switch (parsedChunk._type) {
-                case 'response': {
-                  botMessage += `${parsedChunk.response}`
-                  setMessages(prevMessage => {
-                    const newMessage = prevMessage.map(m => {
-                      if (m.id === nanoID) {
-                        return {
-                          ...m,
-                          display: botMessage
-                        }
-                      }
-                      return m
-                    })
-
-                    return newMessage
-                  })
-                  break
-                }
-                case 'function_call': {
-                  botMessage += `\n[Calling function: ${parsedChunk.functionName}]\n\n`
-                  setMessages(prevMessage => {
-                    const newMessage = prevMessage.map(m => {
-                      if (m.id === nanoID) {
-                        return {
-                          ...m,
-                          display: botMessage
-                        }
-                      }
-                      return m
-                    })
-
-                    return newMessage
-                  })
-                  break
-                }
-                case 'function_fetch': {
-                  botMessage += `>> Done\n\n`
-                  setMessages(prevMessage => {
-                    const newMessage = prevMessage.map(m => {
-                      if (m.id === nanoID) {
-                        return {
-                          ...m,
-                          display: botMessage
-                        }
-                      }
-                      return m
-                    })
-
-                    return newMessage
-                  })
-                  break
-                }
-              }
-            } catch (e) {
-              console.log('Something went wrong parsing JSON', e)
-              continue
-            }
-          }
-        }
-        setIsStreaming(false)
-        setAiState(prevState => ({ ...prevState, isChatting: false }))
       }}
     >
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
@@ -242,7 +166,11 @@ export function PromptForm({
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button type="button" size="icon">
+                <Button
+                  type="button"
+                  size="icon"
+                  // onClick={() => abortButtonHandler()}
+                >
                   <IconStop />
                   <span className="sr-only">Stop Response</span>
                 </Button>

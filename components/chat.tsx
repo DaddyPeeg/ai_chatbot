@@ -26,10 +26,11 @@ export function Chat({ id, className, session }: ChatProps) {
   const path = usePathname()
   const [input, setInput] = useState('')
   const [messages, setMessages] = useUIState<typeof AI>()
-  const [aiState] = useAIState()
+  const [aiState, setAiState] = useAIState<typeof AI>()
   const { getChatThread } = useActions()
   const { getItem, setItem } = useStorage()
   const hasRunEffect = useRef(false)
+  const hasRunEffect_2 = useRef(false)
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
   useEffect(() => {
     if (session?.user) {
@@ -50,28 +51,59 @@ export function Chat({ id, className, session }: ChatProps) {
     setNewChatId(id)
   })
 
-
   useEffect(() => {
     if (hasRunEffect.current) return
+    if (getItem('chat_thread', 'session')) return
     ;(async () => {
-      if (getItem('chat_thread', 'session')) {
+      const res = await getChatThread()
+      if (!res.ok && !res.sessionID) {
+        setAiState((prevState: any) => ({ ...prevState, connection: 'false' }))
+        toast.error(res.message)
         return
       }
-      const res = await getChatThread()
+      setAiState((prevState: any) => ({ ...prevState, connection: 'true' }))
       setItem('chat_thread', res.sessionID)
+
+      const local_storage_items = getItem('chat-thread-history', 'local')
+      if (!local_storage_items) return
+      const storage_chat_history = JSON.parse(local_storage_items)
+      if (res.sessionID === storage_chat_history.threadId) {
+        setMessages(prev => [...prev, ...storage_chat_history.messages])
+      }
     })()
+
+    hasRunEffect.current = true
+  }, [hasRunEffect.current])
+
+  useEffect(() => {
+    if (hasRunEffect_2.current) return
     const threadID = getItem('chat_thread', 'session')
     const local_storage_items = getItem('chat-thread-history', 'local')
-    if (!threadID || !local_storage_items) return
+    if (
+      threadID &&
+      (aiState.connection === 'loading' || aiState.connection === 'false')
+    ) {
+      setAiState(prevState => ({ ...prevState, connection: 'true' }))
+    }
+    if (
+      !threadID ||
+      !local_storage_items ||
+      aiState.connection === 'false' ||
+      aiState.connection === 'loading'
+    ) {
+      return
+    }
     const storage_chat_history = JSON.parse(local_storage_items)
     if (threadID === storage_chat_history.threadId) {
       setMessages(prev => [...prev, ...storage_chat_history.messages])
     }
-    hasRunEffect.current = true
-  }, [])
+    hasRunEffect_2.current = true
+  }, [hasRunEffect_2.current, aiState.connection])
 
   useEffect(() => {
+    //TODO: Fix Rerenders
     if (session) {
+      console.log('wew')
       router.replace('/')
     }
   }, [])
@@ -79,29 +111,39 @@ export function Chat({ id, className, session }: ChatProps) {
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
 
-  return (
-    <div
-      className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
-      ref={scrollRef}
-    >
+  if (aiState.connection === 'loading') {
+    return <div>Loading</div>
+  }
+
+  if (aiState.connection === 'false') {
+    return <div>Please check your internet connection and refresh the page</div>
+  }
+
+  if (aiState.connection === 'true') {
+    return (
       <div
-        className={cn('pb-[200px] pt-4 md:pt-10', className)}
-        ref={messagesRef}
+        className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px] border"
+        ref={scrollRef}
       >
-        {messages.length ? (
-          <ChatList messages={messages} isShared={false} session={session} />
-        ) : (
-          <EmptyScreen />
-        )}
-        <div className="h-px w-full" ref={visibilityRef} />
+        <div
+          className={cn('pb-[200px] pt-4 md:pt-10', className)}
+          ref={messagesRef}
+        >
+          {messages.length ? (
+            <ChatList messages={messages} isShared={false} session={session} />
+          ) : (
+            <EmptyScreen />
+          )}
+          <div className="h-px border w-full" ref={visibilityRef} />
+        </div>
+        <ChatPanel
+          id={id}
+          input={input}
+          setInput={setInput}
+          isAtBottom={isAtBottom}
+          scrollToBottom={scrollToBottom}
+        />
       </div>
-      <ChatPanel
-        id={id}
-        input={input}
-        setInput={setInput}
-        isAtBottom={isAtBottom}
-        scrollToBottom={scrollToBottom}
-      />
-    </div>
-  )
+    )
+  }
 }

@@ -1,5 +1,5 @@
 import { Separator } from '@/components/ui/separator'
-import { UIState } from '@/lib/chat/actions'
+import { AIState, UIState } from '@/lib/chat/actions'
 import { Session } from '@/lib/types'
 import Link from 'next/link'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
@@ -48,7 +48,16 @@ export function ChatList({ messages, session, isShared }: ChatList) {
           {message.type === 'user' && (
             <UserMessage>{message.display}</UserMessage>
           )}
-          {message.type === 'bot' && <BotMessage content={message.display} />}
+          {message.type === 'bot' &&
+            (message.status ? (
+              <BotMessage content={message.display} />
+            ) : (
+              <BotMessage
+                content={
+                  'Something went wrong. Please check your internet connection and try again.'
+                }
+              />
+            ))}
           {index < messages.length - 1 && <Separator className="my-4" />}
         </div>
       ))}

@@ -84,8 +84,10 @@ async function getChatThread() {
     const res = init.json()
     return res
   } catch (e) {
-    console.log('Error fetching data', e)
-    throw new Error('Failed to fetch data')
+    return {
+      message: 'There was something wrong with the network connection',
+      ok: false
+    }
   }
 }
 async function submitUserMessage(content: string) {
@@ -166,12 +168,14 @@ export type AIState = {
   chatId: string
   messages: Message[]
   isChatting: boolean
+  connection: 'loading' | 'true' | 'false'
 }
 
 export type UIState = {
   id: string
   display: React.ReactNode
   type?: 'user' | 'bot'
+  status?: boolean
 }[]
 
 export const AI = createAI<AIState, UIState>({
@@ -180,7 +184,12 @@ export const AI = createAI<AIState, UIState>({
     getChatThread
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), messages: [], isChatting: false },
+  initialAIState: {
+    chatId: nanoid(),
+    messages: [],
+    isChatting: false,
+    connection: 'loading'
+  },
   onGetUIState: async () => {
     'use server'
 
