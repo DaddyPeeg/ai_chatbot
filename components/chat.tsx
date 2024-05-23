@@ -50,7 +50,6 @@ export function Chat({ id, className, session }: ChatProps) {
     setNewChatId(id)
   })
 
-
   useEffect(() => {
     if (hasRunEffect.current) return
     ;(async () => {
