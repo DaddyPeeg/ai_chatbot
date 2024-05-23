@@ -119,10 +119,10 @@ export function Chat({ id, className, session }: ChatProps) {
     return <div>Please check your internet connection and refresh the page</div>
   }
 
-  if (aiState.connection === 'true') {
+  if (aiState.connection === 'true')
     return (
       <div
-        className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px] border"
+        className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
         ref={scrollRef}
       >
         <div
@@ -134,7 +134,7 @@ export function Chat({ id, className, session }: ChatProps) {
           ) : (
             <EmptyScreen />
           )}
-          <div className="h-px border w-full" ref={visibilityRef} />
+          <div className="h-px w-full" ref={visibilityRef} />
         </div>
         <ChatPanel
           id={id}
@@ -145,5 +145,4 @@ export function Chat({ id, className, session }: ChatProps) {
         />
       </div>
     )
-  }
 }

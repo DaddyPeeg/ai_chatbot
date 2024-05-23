@@ -1,10 +1,12 @@
 'use client'
 
 import * as React from 'react'
+import { useUIState } from 'ai/rsc'
 
 import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { IconArrowDown } from '@/components/ui/icons'
+import { AI } from '@/lib/chat/actions'
 
 interface ButtonScrollToBottomProps extends ButtonProps {
   isAtBottom: boolean
@@ -17,7 +19,14 @@ export function ButtonScrollToBottom({
   scrollToBottom,
   ...props
 }: ButtonScrollToBottomProps) {
-  console.log(isAtBottom)
+  const [messages] = useUIState<typeof AI>()
+
+  React.useEffect(() => {
+    if (isAtBottom) return
+    console.log('wew')
+    scrollToBottom()
+  }, [messages.length])
+
   return (
     <Button
       variant="outline"

@@ -19,19 +19,24 @@ import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
 import useStorage from '@/lib/hooks/use-storage'
 import { fetchDataWithAbort } from '@/lib/utils'
+import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 
 export function PromptForm({
   input,
   setInput,
   signal,
   controller,
-  abortButtonHandler
+  abortButtonHandler,
+  isAtBottom,
+  scrollToBottom
 }: {
   input: string
   setInput: (value: string) => void
   signal: any
   controller: any
   abortButtonHandler: () => void
+  isAtBottom: boolean
+  scrollToBottom: () => void
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
@@ -101,6 +106,8 @@ export function PromptForm({
             status: true
           }
         ])
+
+        // if (!isAtBottom && buttonRef) buttonRef.current.click()
 
         const thread = getItem('chat_thread')
 

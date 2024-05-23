@@ -1,9 +1,12 @@
+import { useUIState } from 'ai/rsc'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { AI } from '../chat/actions'
 
 export const useScrollAnchor = () => {
   const messagesRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const visibilityRef = useRef<HTMLDivElement>(null)
+  const [messages] = useUIState<typeof AI>()
 
   const [isAtBottom, setIsAtBottom] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
@@ -15,7 +18,7 @@ export const useScrollAnchor = () => {
         behavior: 'smooth'
       })
     }
-  }, [])
+  }, [messagesRef.current, scrollRef.current, visibilityRef.current])
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -25,7 +28,13 @@ export const useScrollAnchor = () => {
         })
       }
     }
-  }, [isAtBottom, isVisible])
+  }, [
+    isAtBottom,
+    isVisible,
+    messagesRef.current,
+    scrollRef.current,
+    visibilityRef.current
+  ])
 
   useEffect(() => {
     const { current } = scrollRef
@@ -48,7 +57,7 @@ export const useScrollAnchor = () => {
         current.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [])
+  }, [messagesRef.current, scrollRef.current, visibilityRef.current])
 
   useEffect(() => {
     if (visibilityRef.current) {

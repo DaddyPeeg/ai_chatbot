@@ -187,6 +187,8 @@ export function ChatPanel({
             signal={signal}
             controller={controller}
             abortButtonHandler={abortButtonHandler}
+            isAtBottom={isAtBottom}
+            scrollToBottom={scrollToBottom}
           />
           <FooterText className="hidden sm:block" />
         </div>
