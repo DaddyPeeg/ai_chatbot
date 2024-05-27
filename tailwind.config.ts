@@ -19,7 +19,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)']
+        mono: ['var(--font-geist-mono)'],
+        avenirnextltproregular: ['var(--font-avenirnextltproregular)']
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -27,6 +28,19 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        custom_foreground: '#323232',
+        custom_primary: {
+          DEFAULT: '#fc3894',
+          foreground: '#ffffff'
+        },
+        custom_secondary: {
+          DEFAULT: '#7030a0',
+          foreground: '#ffffff'
+        },
+        custom_accent: {
+          DEFAULT: '#574280',
+          foreground: '#ffffff'
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'

@@ -6,12 +6,21 @@ export const useScrollAnchor = () => {
   const messagesRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const visibilityRef = useRef<HTMLDivElement>(null)
-  const [messages] = useUIState<typeof AI>()
+
 
   const [isAtBottom, setIsAtBottom] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
 
   const scrollToBottom = useCallback(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollIntoView({
+        block: 'end',
+        behavior: 'smooth'
+      })
+    }
+  }, [messagesRef.current, scrollRef.current, visibilityRef.current])
+
+  const scrollToBottomNew = useCallback(() => {
     if (messagesRef.current) {
       messagesRef.current.scrollIntoView({
         block: 'end',
