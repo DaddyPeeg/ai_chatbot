@@ -13,36 +13,13 @@ export interface ChatList {
 }
 
 export function ChatList({ messages, session, isShared }: ChatList) {
+  console.log(messages)
   if (!messages.length) {
     return null
   }
 
   return (
     <div className="relative mx-auto max-w-2xl px-4">
-      {!isShared && !session ? (
-        <>
-          <div className="group relative mb-4 flex items-start md:-ml-12">
-            <div className="bg-background flex size-[25px] shrink-0 select-none items-center justify-center rounded-md border shadow-sm">
-              <ExclamationTriangleIcon />
-            </div>
-            <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
-              <p className="text-muted-foreground leading-normal">
-                Please{' '}
-                <Link href="/login" className="underline">
-                  log in
-                </Link>{' '}
-                or{' '}
-                <Link href="/signup" className="underline">
-                  sign up
-                </Link>{' '}
-                to save and revisit your chat history!
-              </p>
-            </div>
-          </div>
-          <Separator className="my-4" />
-        </>
-      ) : null}
-
       {messages.map((message: any, index: any) => (
         <div key={message.id}>
           {message.type === 'user' && (
@@ -50,7 +27,11 @@ export function ChatList({ messages, session, isShared }: ChatList) {
           )}
           {message.type === 'bot' &&
             (message.status ? (
-              <BotMessage content={message.display} />
+              message.display === '' ? (
+                <BotMessage content="Bot not Responding (Fallback)" />
+              ) : (
+                <BotMessage content={message.display} />
+              )
             ) : (
               <BotMessage
                 content={
@@ -58,6 +39,27 @@ export function ChatList({ messages, session, isShared }: ChatList) {
                 }
               />
             ))}
+
+          {message.type === 'bot' &&
+            message.components &&
+            message.components.length > 0 &&
+            message.components.map((item: any, index: any) => {
+              if (item.signal && item.signal === 'openWidget') {
+                return (
+                  <div
+                    key={index}
+                    className="rounded-md flex justify-center border py-4 mt-4"
+                  >
+                    <Link
+                      className="px-6 py-2 bg-green-500 font-bold text-white rounded-md"
+                      href={item.data}
+                    >
+                      Goto Survey
+                    </Link>
+                  </div>
+                )
+              }
+            })}
           {index < messages.length - 1 && <Separator className="my-4" />}
         </div>
       ))}

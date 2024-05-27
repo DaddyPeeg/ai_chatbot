@@ -17,6 +17,7 @@ import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat } from '@/lib/types'
 import { auth } from '@/auth'
+import { ReactNode } from 'react'
 
 let THREAD_ID = ''
 async function utilChat(chat: any, text: any, newText: any) {
@@ -70,7 +71,7 @@ async function getChatThread() {
   'use server'
   try {
     const init = await fetch(
-      'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/start',
+      'https://chatbot-be-2.int-node.srv-01.xyzapps.xyz/api/ai/start',
       {
         method: 'POST',
         headers: {
@@ -175,6 +176,7 @@ export type UIState = {
   id: string
   display: React.ReactNode
   type?: 'user' | 'bot'
+  components?: any
   status?: boolean
 }[]
 

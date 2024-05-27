@@ -18,7 +18,7 @@ import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
 import useStorage from '@/lib/hooks/use-storage'
-import { fetchDataWithAbort } from '@/lib/utils'
+import { fetchDataWithAbort } from '@/lib/chat_response'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 
 export function PromptForm({
@@ -41,7 +41,6 @@ export function PromptForm({
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
-  const { submitUserMessage } = useActions()
   const [messages, setMessages] = useUIState<typeof AI>()
   const [aiState, setAiState] = useAIState<typeof AI>()
   const { getItem, setItem, removeItem } = useStorage()
@@ -56,10 +55,10 @@ export function PromptForm({
 
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
-      const threadId = getItem('chat_thread', 'session')
+      const chatID = getItem('chatID', 'session')
       setItem(
         'chat-thread-history',
-        JSON.stringify({ threadId, messages: [...messages] }),
+        JSON.stringify({ chatID, messages: [...messages] }),
         'local'
       )
     }
@@ -107,13 +106,11 @@ export function PromptForm({
           }
         ])
 
-        // if (!isAtBottom && buttonRef) buttonRef.current.click()
-
-        const thread = getItem('chat_thread')
-
+        const thread = getItem('chatID')
         const restructuredObject = {
-          sessionID: thread,
-          prompt: value
+          chatID: thread,
+          prompt: value,
+          templateID: process.env.NEXT_PUBLIC_CHAT_TEMP_ID
         }
         fetchDataWithAbort(
           controller,
