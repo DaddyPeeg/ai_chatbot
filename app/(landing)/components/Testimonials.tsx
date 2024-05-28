@@ -55,7 +55,9 @@ const Testimonials = () => {
           <h1 className="font-avenirnextltproregular text-[34px] leading-[41px] md:w-[40rem] text-center">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit!
           </h1>
-          <p className="mt-2">Lorem ipsum dolor sit amet consectetur.</p>
+          <p className="mt-2 text-center">
+            Lorem ipsum dolor sit amet consectetur.
+          </p>
           <div className="flex flex-col lg:grid gap-4 grid-cols-4 w-full mt-10">
             {testimonials.map((data, index) => (
               <TestimonialCards key={`test-${index}`} testimonial={data} />
