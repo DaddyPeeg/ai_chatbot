@@ -9,6 +9,15 @@ import { Cross1Icon, HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils'
 export function Header() {
   const [isOpen, setIsOpen] = React.useState(false)
+  const mainBody = React.useRef(document.body)
+
+  React.useEffect(() => {
+    if (isOpen) {
+      mainBody.current.style.overflowY = 'hidden'
+      return
+    }
+    mainBody.current.style.overflowY = 'auto'
+  }, [isOpen])
   return (
     <>
       <header
