@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { customAlphabet } from 'nanoid'
+import { JSXElementConstructor } from 'react'
+import { ReactElement } from 'react-markdown/lib/react-markdown'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {

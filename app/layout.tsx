@@ -7,6 +7,13 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
+import localFont from 'next/font/local'
+
+const avenirnextltproregular = localFont({
+  src: '../public/font/avenirnextltproregular/Avenir Next LT Pro Bold.otf',
+  display: 'swap',
+  variable: '--font-avenirnextltproregular'
+})
 
 export const metadata = {
   metadataBase: process.env.VERCEL_URL
@@ -42,18 +49,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={cn(
           'font-sans antialiased',
           GeistSans.variable,
-          GeistMono.variable
+          GeistMono.variable,
+          avenirnextltproregular.variable
         )}
       >
         <Toaster position="top-center" />
         <Providers
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <div className="flex flex-col min-h-screen">
-            <Header />
             <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
           </div>
           <TailwindIndicator />
