@@ -16,7 +16,7 @@ const Banner = ({
     )
   if (variant === 'accent')
     return (
-      <div className="w-full bg-custom_secondary text-custom_secondary-foreground py-8">
+      <div className="w-full bg-custom_accent text-custom_secondary-foreground py-8">
         <Wrapper>{children}</Wrapper>
       </div>
     )

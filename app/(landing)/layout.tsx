@@ -6,7 +6,6 @@ interface LandingLayoutProps {
 
 export default async function LandingLayout({ children }: LandingLayoutProps) {
   return (
-    // h-[calc(100vh_-_theme(spacing.16))]
     <div className="relative flex flex-col bg-background">
       <Header />
       {children}

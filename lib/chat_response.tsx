@@ -11,7 +11,6 @@ export async function fetchDataWithAbort(
 ) {
   contoller.current = new AbortController()
   const signal = contoller.current.signal
-  console.log(restructuredObject)
   try {
     const chat: any = await fetch(
       'https://chatbot-be-2.int-node.srv-01.xyzapps.xyz/api/ai/call',
@@ -163,9 +162,10 @@ export async function fetchDataWithAbort(
     setMessages((prevMessage: any) => {
       const newMessage = prevMessage.map((m: any) => {
         if (m.id === nanoID && m.display === '') {
+          console.log('run')
           return {
             ...m,
-            status: 'false'
+            status: false
           }
         }
         return m

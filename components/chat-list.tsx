@@ -13,7 +13,6 @@ export interface ChatList {
 }
 
 export function ChatList({ messages, session, isShared }: ChatList) {
-  console.log(messages)
   if (!messages.length) {
     return null
   }
@@ -27,17 +26,9 @@ export function ChatList({ messages, session, isShared }: ChatList) {
           )}
           {message.type === 'bot' &&
             (message.status ? (
-              message.display === '' ? (
-                <BotMessage content="Bot not Responding (Fallback)" />
-              ) : (
-                <BotMessage content={message.display} />
-              )
+              <BotMessage content={message.display} />
             ) : (
-              <BotMessage
-                content={
-                  'Something went wrong. Please check your internet connection and try again.'
-                }
-              />
+              <BotMessage content={'Bot Response Error (Fallback)'} />
             ))}
 
           {message.type === 'bot' &&
