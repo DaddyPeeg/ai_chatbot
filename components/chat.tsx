@@ -12,6 +12,8 @@ import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import type { AI } from '@/lib/chat/actions'
 import { toast } from 'sonner'
 import useStorage from '@/lib/hooks/use-storage'
+import ChatLoading from './chat-loading'
+import ChatFailed from './ui/chat-failed'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -102,11 +104,11 @@ export function Chat({ className, session }: ChatProps) {
     useScrollAnchor()
 
   if (aiState.connection === 'loading') {
-    return <div>Loading</div>
+    return <ChatLoading />
   }
 
   if (aiState.connection === 'false') {
-    return <div>Please check your internet connection and refresh the page</div>
+    return <ChatFailed />
   }
 
   if (aiState.connection === 'true')
