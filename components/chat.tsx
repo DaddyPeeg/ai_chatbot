@@ -38,13 +38,6 @@ export function Chat({ className, session }: ChatProps) {
   }, [aiState.messages, router])
 
   useEffect(() => {
-<<<<<<< HEAD
-    setNewChatId(id)
-  })
-
-  useEffect(() => {
-=======
->>>>>>> c4c6e8de638635068a1201e41f0f8c24486fba66
     if (hasRunEffect.current) return
     if (getItem('chatID', 'session')) return
     ;(async () => {

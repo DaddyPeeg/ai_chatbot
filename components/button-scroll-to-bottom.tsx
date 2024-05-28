@@ -19,9 +19,6 @@ export function ButtonScrollToBottom({
   scrollToBottom,
   ...props
 }: ButtonScrollToBottomProps) {
-<<<<<<< HEAD
-  console.log(isAtBottom)
-=======
   const [messages] = useUIState<typeof AI>()
 
   React.useEffect(() => {
@@ -30,7 +27,6 @@ export function ButtonScrollToBottom({
     scrollToBottom()
   }, [messages.length])
 
->>>>>>> c4c6e8de638635068a1201e41f0f8c24486fba66
   return (
     <Button
       variant="outline"
