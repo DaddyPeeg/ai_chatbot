@@ -13,7 +13,7 @@ export default function LandingPage() {
       </Banner>
       <Hero />
       <Banner variant="accent">
-        <div className="flex justify-center text-lg font-medium">
+        <div className="flex justify-center text-center text-lg font-medium">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequatur,
           necessitatibus.
         </div>

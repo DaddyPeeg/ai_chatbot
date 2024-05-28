@@ -52,11 +52,11 @@ const Testimonials = () => {
     <div className="bg-[#f7f7fb]">
       <Wrapper>
         <div className="py-20 flex flex-col items-center">
-          <h1 className="font-avenirnextltproregular text-[34px] leading-[41px] w-[40rem] text-center">
+          <h1 className="font-avenirnextltproregular text-[34px] leading-[41px] md:w-[40rem] text-center">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit!
           </h1>
           <p className="mt-2">Lorem ipsum dolor sit amet consectetur.</p>
-          <div className="borde grid gap-4 grid-cols-4 w-full mt-10">
+          <div className="flex flex-col lg:grid gap-4 grid-cols-4 w-full mt-10">
             {testimonials.map((data, index) => (
               <TestimonialCards key={`test-${index}`} testimonial={data} />
             ))}

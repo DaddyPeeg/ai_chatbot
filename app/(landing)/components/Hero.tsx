@@ -30,7 +30,7 @@ const Hero = () => {
     <Wrapper>
       <div className="flex flex-col py-16 justify-center">
         <div className="flex flex-col lg:flex-row lg:items-center">
-          <div className="w-[40rem]">
+          <div className="md:w-[40rem]">
             <h1 className="text-[3rem] leading-[3.5rem] mb-8 font-avenirnextltproregular">
               Lorem ipsum, dolor sit amet consectetur adipisicing.
             </h1>
@@ -57,15 +57,15 @@ const Hero = () => {
               <Link href={'/chat'}>
                 <Button
                   size="xl"
-                  className="rounded-full uppercase font-semibold"
+                  className="rounded-full uppercase font-semibold w-10 text-xs md:w-auto"
                 >
-                  Chat Bot (Placeholder)
+                  <p>Chat Bot</p>
                 </Button>
               </Link>
               <Button
                 size="xl"
                 variant="outline"
-                className="rounded-full uppercase font-semibold"
+                className="rounded-full uppercase font-semibold w-10 text-xs md:w-auto"
               >
                 Lorem, ipsum.
               </Button>

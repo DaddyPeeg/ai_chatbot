@@ -9,7 +9,6 @@ import { Cross1Icon, HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils'
 export function Header() {
   const [isOpen, setIsOpen] = React.useState(false)
-  console.log(isOpen)
   return (
     <>
       <header
