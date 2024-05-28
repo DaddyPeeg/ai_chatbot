@@ -19,7 +19,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)']
+        mono: ['var(--font-geist-mono)'],
+        avenirnextltproregular: ['var(--font-avenirnextltproregular)']
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -27,6 +28,19 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        custom_foreground: '#323232',
+        custom_primary: {
+          DEFAULT: '#fc3894',
+          foreground: '#ffffff'
+        },
+        custom_secondary: {
+          DEFAULT: '#7030a0',
+          foreground: '#ffffff'
+        },
+        custom_accent: {
+          DEFAULT: '#574280',
+          foreground: '#ffffff'
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
@@ -69,11 +83,20 @@ module.exports = {
         'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' }
+        },
+        refine: {
+          from: {
+            transform: 'translateX(0)'
+          },
+          to: {
+            transform: 'translateX(calc(-100% - 2rem))'
+          }
         }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out'
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        'refine-slide': 'refine 35s infinite linear'
       }
     }
   },

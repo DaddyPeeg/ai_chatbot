@@ -12,6 +12,7 @@ import type { AI } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
 import { BotMessage, UserMessage } from './stocks/message'
 import useStorage from '@/lib/hooks/use-storage'
+import { fetchDataWithAbort } from '@/lib/chat_response'
 
 export interface ChatPanelProps {
   id?: string
@@ -23,8 +24,6 @@ export interface ChatPanelProps {
 }
 
 export function ChatPanel({
-  id,
-  title,
   input,
   setInput,
   isAtBottom,
@@ -38,12 +37,23 @@ export function ChatPanel({
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
 
+  const controller = React.useRef(new AbortController())
+  const signal = React.useMemo(() => {
+    return controller.current.signal
+  }, [controller.current])
+
+  const abortButtonHandler = () => {
+    controller.current.abort()
+    console.log('Fetch request manually aborted')
+    // controller.current = new AbortController()
+  }
+
   React.useEffect(() => {
     if (!isStreaming && hasRunEffect.current) {
-      const threadId = getItem('chat_thread', 'session')
+      const chatID = getItem('chatID', 'session')
       setItem(
         'chat-thread-history',
-        JSON.stringify({ threadId, messages: [...messages] }),
+        JSON.stringify({ chatID, messages: [...messages] }),
         'local'
       )
     }
@@ -75,7 +85,7 @@ export function ChatPanel({
   ]
 
   return (
-    <div className="fixed inset-x-0 bottom-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% duration-300 ease-in-out animate-in dark:from-background/10 dark:from-10% dark:to-background/80 peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
+    <div className="fixed inset-x-0 bottom-0 w-full bg-transparent duration-300 ease-in-out animate-in peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
       <ButtonScrollToBottom
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
@@ -110,110 +120,25 @@ export function ChatPanel({
                     {
                       id: nanoID,
                       display: '',
-                      type: 'bot'
+                      type: 'bot',
+                      status: true
                     }
                   ])
 
-                  const thread = getItem('chat_thread')
-
+                  const thread = getItem('chatID')
                   const restructuredObject = {
-                    sessionID: thread,
-                    prompt: example.message
+                    chatID: thread,
+                    prompt: example.message,
+                    templateID: process.env.NEXT_PUBLIC_CHAT_TEMP_ID
                   }
-                  const chat: any = await fetch(
-                    'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/call',
-                    {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(restructuredObject)
-                    }
+                  fetchDataWithAbort(
+                    controller,
+                    restructuredObject,
+                    setMessages,
+                    nanoID,
+                    setIsStreaming,
+                    setAiState
                   )
-                  if (!chat.ok) {
-                    console.log('Failed to fetch data')
-                    return
-                  }
-                  const reader = chat.body.getReader()
-                  let decoder = new TextDecoder()
-                  let botMessage = ''
-                  while (true) {
-                    const { done, value } = await reader.read()
-                    const chunk = decoder
-                      .decode(value, { stream: true })
-                      .split('\n')
-                    if (done) break
-                    const filteredChunk = chunk.filter(entry => entry !== '')
-                    for (const decodedChunk of filteredChunk) {
-                      if (!decodedChunk) {
-                        continue
-                      }
-                      try {
-                        const parsedChunk = JSON.parse(decodedChunk)
-                        if (parsedChunk?._type === 'done') {
-                          break
-                        }
-                        switch (parsedChunk._type) {
-                          case 'response': {
-                            botMessage += `${parsedChunk.response}`
-                            setMessages(prevMessage => {
-                              const newMessage = prevMessage.map(m => {
-                                if (m.id === nanoID) {
-                                  return {
-                                    ...m,
-                                    display: botMessage
-                                  }
-                                }
-                                return m
-                              })
-
-                              return newMessage
-                            })
-                            break
-                          }
-                          case 'function_call': {
-                            botMessage += `\n[Calling function: ${parsedChunk.functionName}]\n\n`
-                            setMessages(prevMessage => {
-                              const newMessage = prevMessage.map(m => {
-                                if (m.id === nanoID) {
-                                  return {
-                                    ...m,
-                                    display: botMessage
-                                  }
-                                }
-                                return m
-                              })
-
-                              return newMessage
-                            })
-                            break
-                          }
-                          case 'function_fetch': {
-                            botMessage += `>> Done\n\n`
-                            setMessages(prevMessage => {
-                              const newMessage = prevMessage.map(m => {
-                                if (m.id === nanoID) {
-                                  return {
-                                    ...m,
-                                    display: botMessage
-                                  }
-                                }
-                                return m
-                              })
-
-                              return newMessage
-                            })
-                            break
-                          }
-                        }
-                      } catch (e) {
-                        console.log('Something went wrong parsing JSON', e)
-                        continue
-                      }
-                    }
-                  }
-                  setIsStreaming(false)
-                  setAiState(prevState => ({ ...prevState, isChatting: false }))
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>
@@ -224,37 +149,16 @@ export function ChatPanel({
             ))}
         </div>
 
-        {messages?.length >= 2 ? (
-          <div className="flex h-12 items-center justify-center">
-            <div className="flex space-x-2">
-              {id && title ? (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShareDialogOpen(true)}
-                  >
-                    <IconShare className="mr-2" />
-                    Share
-                  </Button>
-                  <ChatShareDialog
-                    open={shareDialogOpen}
-                    onOpenChange={setShareDialogOpen}
-                    onCopy={() => setShareDialogOpen(false)}
-                    shareChat={shareChat}
-                    chat={{
-                      id,
-                      title,
-                      messages: aiState.messages
-                    }}
-                  />
-                </>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
-          <PromptForm input={input} setInput={setInput} />
+          <PromptForm
+            input={input}
+            setInput={setInput}
+            signal={signal}
+            controller={controller}
+            abortButtonHandler={abortButtonHandler}
+            isAtBottom={isAtBottom}
+            scrollToBottom={scrollToBottom}
+          />
           <FooterText className="hidden sm:block" />
         </div>
       </div>

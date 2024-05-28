@@ -17,6 +17,7 @@ import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat } from '@/lib/types'
 import { auth } from '@/auth'
+import { ReactNode } from 'react'
 
 let THREAD_ID = ''
 async function utilChat(chat: any, text: any, newText: any) {
@@ -70,7 +71,7 @@ async function getChatThread() {
   'use server'
   try {
     const init = await fetch(
-      'https://chatbot-be.int-node.srv-01.xyzapps.xyz/api/ai/start',
+      'https://chatbot-be-2.int-node.srv-01.xyzapps.xyz/api/ai/start',
       {
         method: 'POST',
         headers: {
@@ -84,8 +85,10 @@ async function getChatThread() {
     const res = init.json()
     return res
   } catch (e) {
-    console.log('Error fetching data', e)
-    throw new Error('Failed to fetch data')
+    return {
+      message: 'There was something wrong with the network connection',
+      ok: false
+    }
   }
 }
 async function submitUserMessage(content: string) {
@@ -166,12 +169,15 @@ export type AIState = {
   chatId: string
   messages: Message[]
   isChatting: boolean
+  connection: 'loading' | 'true' | 'false'
 }
 
 export type UIState = {
   id: string
   display: React.ReactNode
   type?: 'user' | 'bot'
+  components?: any
+  status?: boolean
 }[]
 
 export const AI = createAI<AIState, UIState>({
@@ -180,7 +186,12 @@ export const AI = createAI<AIState, UIState>({
     getChatThread
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), messages: [], isChatting: false },
+  initialAIState: {
+    chatId: nanoid(),
+    messages: [],
+    isChatting: false,
+    connection: 'loading'
+  },
   onGetUIState: async () => {
     'use server'
 
