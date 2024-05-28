@@ -39,7 +39,7 @@ const testimonials: Testimonial[] = [
   },
   {
     rating: 5,
-    title: 'Effienct',
+    title: 'Efficient',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis voluptas perferendis minus blanditiis magnam unde asperiores atque totam quo doloremque.',
     author: 'John W.',
