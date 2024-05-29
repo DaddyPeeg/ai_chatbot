@@ -9,7 +9,7 @@ import { Cross1Icon, HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils'
 import { NavigationMenuComp } from './navigation-menu'
 import { AccordionComp } from './accordion-comp'
-export function Header() {
+export function Header({ footer }: { footer?: boolean }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const mainBody = React.useRef(document.body)
 
@@ -24,10 +24,11 @@ export function Header() {
     <>
       <header
         className={cn(
-          'fixed top-0 z-[100] flex items-center justify-between w-full border-b shrink-0 transition-all overflow-hidden lg:overflow-visible',
+          'top-0 z-[100] flex items-center justify-between w-full border-b shrink-0 transition-all overflow-hidden lg:overflow-visible',
           !isOpen
             ? 'h-16 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl'
-            : 'h-dvh bg-white'
+            : 'h-dvh bg-white',
+          footer ? 'bg-white' : 'fixed'
         )}
       >
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
