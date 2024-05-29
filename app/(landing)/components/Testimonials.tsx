@@ -59,7 +59,7 @@ const Testimonials = () => {
             See how our tailored health insurance has helped diverse individuals
             and families firsthand."
           </p>
-          <div className="flex flex-col lg:grid gap-4 grid-cols-4 w-full mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-10">
             {testimonials.map((data, index) => (
               <TestimonialCards key={`test-${index}`} testimonial={data} />
             ))}

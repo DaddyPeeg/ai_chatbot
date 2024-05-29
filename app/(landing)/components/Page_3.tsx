@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button2'
 import Wrapper from '@/components/wrapper'
 import { CheckNew, Lock, OkFemale } from '@/public/assets'
-import { LockClosedIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 const Page_3 = () => {
@@ -60,12 +60,14 @@ const Page_3 = () => {
               </ul>
             </div>
             <div className="mt-8">
-              <Button
-                size="lg"
-                className="uppercase font-semibold rounded-full"
-              >
-                Start your Application
-              </Button>
+              <Link href="/chat">
+                <Button
+                  size="lg"
+                  className="uppercase font-semibold rounded-full"
+                >
+                  Start your Application
+                </Button>
+              </Link>
             </div>
             <div className="flex items-center gap-3 mt-4">
               <div className="relative h-4 w-3">

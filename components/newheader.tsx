@@ -57,17 +57,17 @@ export function Header() {
               <div className="hidden gap-2 items-center lg:flex">
                 <NavigationMenuComp />
                 <div className="flex items-center gap-2">
-                  <Link href={'/chat'}>
+                  <Link href={''}>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-full uppercase  border-[1px] text-xs"
+                      className="rounded-full uppercase bg-transparent border-[1px] text-xs"
                     >
                       Sign in
                     </Button>
                   </Link>
                   <Button size="sm" className="rounded-full uppercase text-xs">
-                    Get Started
+                    Sign up
                   </Button>
                 </div>
               </div>
@@ -86,17 +86,17 @@ export function Header() {
                 <p className="py-4">Nav3</p>
               </Link>
               <div className="flex items-center gap-2 py-4">
-                <Link href={'/chat'}>
+                <Link href={''}>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="rounded-full uppercase  border-[1px] text-xs"
+                    className="rounded-full uppercase bg-transparent border-[1px] text-xs"
                   >
                     Sign in
                   </Button>
                 </Link>
                 <Button size="sm" className="rounded-full uppercase text-xs">
-                  Get Started
+                  Sign up
                 </Button>
               </div>
             </div>
