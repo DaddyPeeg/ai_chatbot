@@ -24,7 +24,7 @@ export function Header() {
     <>
       <header
         className={cn(
-          'fixed top-0 z-50 flex items-center justify-between w-full border-b shrink-0 transition-all overflow-hidden lg:overflow-visible',
+          'fixed top-0 z-[100] flex items-center justify-between w-full border-b shrink-0 transition-all overflow-hidden lg:overflow-visible',
           !isOpen
             ? 'h-16 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl'
             : 'h-dvh bg-white'

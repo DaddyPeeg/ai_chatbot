@@ -3,6 +3,8 @@ import Hero from './components/Hero'
 import InfiniteLogoScroll from '@/components/infinite-logo-scroll'
 import Testimonials from './components/Testimonials'
 import Page_3 from './components/Page_3'
+import WhyChooseUs from './components/WhyChooseUs'
+import AboutUs from './components/AboutUs'
 
 export default function LandingPage() {
   return (
@@ -20,8 +22,10 @@ export default function LandingPage() {
         </div>
       </Banner>
       <InfiniteLogoScroll />
+      <AboutUs />
       <Testimonials />
       <Page_3 />
+      <WhyChooseUs />
     </div>
   )
 }
