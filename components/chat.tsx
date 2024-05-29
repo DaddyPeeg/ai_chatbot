@@ -94,10 +94,8 @@ export function Chat({ className, session }: ChatProps) {
   }, [hasRunEffect_2.current, aiState.connection])
 
   useEffect(() => {
-    //TODO: Fix Rerenders
     if (session) {
-      console.log('wew')
-      router.replace('/')
+      router.replace('/chat')
     }
   }, [])
 

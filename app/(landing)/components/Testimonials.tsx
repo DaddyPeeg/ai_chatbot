@@ -17,7 +17,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     title: 'Awesome',
     description:
-      "They guided me through every step of finding the right insurance plan for my family's needs. Highly recommend!",
+      'They guided me through every step of finding the right insurance plan for my familys needs. Highly recommend!',
     author: 'Gary T.',
     membership: 'Member'
   },
@@ -57,7 +57,7 @@ const Testimonials = () => {
           </h1>
           <p className="mt-2 text-center">
             See how our tailored health insurance has helped diverse individuals
-            and families firsthand."
+            and families firsthand.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-10">
             {testimonials.map((data, index) => (

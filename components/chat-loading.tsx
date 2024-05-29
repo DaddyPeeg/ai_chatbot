@@ -1,8 +1,4 @@
 import React from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
-import Wrapper from './wrapper'
-import { ChatPanel } from './chat-panel'
 import Image from 'next/image'
 import { ChatBotIcon } from '@/public/assets'
 
@@ -13,7 +9,7 @@ const ChatLoading = () => {
         <h1 className="font-avenirnextltproregular text-3xl">
           Healthcare Chat Bot
         </h1>
-        <h2 className="">I'm here for your insurance needs</h2>
+        <h2 className="">I&lsquo;m here for your insurance needs</h2>
         <Image
           src={ChatBotIcon}
           alt="chat-bot-icon"
