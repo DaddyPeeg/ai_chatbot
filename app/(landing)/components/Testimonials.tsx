@@ -15,9 +15,9 @@ export interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     rating: 5,
-    title: 'Easy',
+    title: 'Awesome',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis voluptas perferendis minus blanditiis magnam unde asperiores atque totam quo doloremque.',
+      'They guided me through every step of finding the right insurance plan for my familys needs. Highly recommend!',
     author: 'Gary T.',
     membership: 'Member'
   },
@@ -25,7 +25,7 @@ const testimonials: Testimonial[] = [
     rating: 3,
     title: 'Amazing',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis voluptas perferendis minus blanditiis magnam unde asperiores atque totam quo doloremque.',
+      'I was impressed with how personalized their recommendations were. They really took the time to understand my situation.',
     author: 'John C.',
     membership: 'Client'
   },
@@ -33,7 +33,7 @@ const testimonials: Testimonial[] = [
     rating: 4,
     title: 'Dynamic',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis voluptas perferendis minus blanditiis magnam unde asperiores atque totam quo doloremque.',
+      'Their expertise was invaluable in helping me navigate the complexities of health insurance. Thank you for your support!',
     author: 'Harry P.',
     membership: 'Visitor'
   },
@@ -41,7 +41,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     title: 'Efficient',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis voluptas perferendis minus blanditiis magnam unde asperiores atque totam quo doloremque.',
+      'Quick and efficient! Got my insurance sorted out in no time. Thank you for making it so easy.',
     author: 'John W.',
     membership: 'Member'
   }
@@ -53,12 +53,13 @@ const Testimonials = () => {
       <Wrapper>
         <div className="py-20 flex flex-col items-center">
           <h1 className="font-avenirnextltproregular text-[34px] leading-[41px] md:w-[40rem] text-center">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit!
+            Insightful Reviews: Experience Our Health Insurance Services
           </h1>
           <p className="mt-2 text-center">
-            Lorem ipsum dolor sit amet consectetur.
+            See how our tailored health insurance has helped diverse individuals
+            and families firsthand.
           </p>
-          <div className="flex flex-col lg:grid gap-4 grid-cols-4 w-full mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mt-10">
             {testimonials.map((data, index) => (
               <TestimonialCards key={`test-${index}`} testimonial={data} />
             ))}

@@ -8,19 +8,19 @@ import Wrapper from '@/components/wrapper'
 
 const subtext = [
   {
-    text: 'Lorem, ipsum dolor.',
+    text: 'Personalized Plans.',
     image: CheckIcon
   },
   {
-    text: 'Lorem, ipsum dolor.',
+    text: 'Time-Saving',
     image: CheckIcon
   },
   {
-    text: 'Lorem ipsum dolor sit.',
+    text: 'Simplified Process',
     image: CheckIcon
   },
   {
-    text: 'Lorem ipsum dolor sit amet.',
+    text: 'Accessibility',
     image: CheckIcon
   }
 ]
@@ -32,7 +32,7 @@ const Hero = () => {
         <div className="flex flex-col lg:flex-row lg:items-center">
           <div className="md:w-[40rem]">
             <h1 className="text-[3rem] leading-[3.5rem] mb-8 font-avenirnextltproregular">
-              Lorem ipsum, dolor sit amet consectetur adipisicing.
+              Find Your Perfect Health Insurance Plan.
             </h1>
             {subtext.map((item, index) => (
               <div
@@ -59,7 +59,7 @@ const Hero = () => {
                   size="xl"
                   className="rounded-full uppercase font-semibold w-10 text-xs md:w-auto"
                 >
-                  <p>Chat Bot</p>
+                  <p>Get Started</p>
                 </Button>
               </Link>
               <Button
@@ -67,12 +67,11 @@ const Hero = () => {
                 variant="outline"
                 className="rounded-full uppercase font-semibold w-10 text-xs md:w-auto"
               >
-                Lorem, ipsum.
+                Find My Plan
               </Button>
             </div>
             <p className="text-custom_accent">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod,
-              nam?
+              Save time and hassle with our AI-powered insurance agent.
             </p>
           </div>
           <div className="lg:w-[calc(100%_-_40rem)] mt-12 lg:mt-0 flex justify-center">
@@ -84,6 +83,17 @@ const Hero = () => {
                 loading="eager"
                 fill
                 priority
+                className="z-20"
+              />
+              <div className="-z-1 absolute h-[32rem] left-6 top-6 w-[15rem] bg-black" />
+              <video
+                src="https://videos.pexels.com/video-files/5310966/5310966-uhd_2160_3840_25fps.mp4"
+                // src="https://assets-global.website-files.com/658327ffca1812dacb451650/658ae91c80fccf87136bdefb_SignUp-transcode.mp4"
+                loop
+                autoPlay
+                playsInline
+                muted
+                className="-z-1 absolute top-16 left-6 w-60"
               />
             </div>
           </div>

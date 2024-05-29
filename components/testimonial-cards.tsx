@@ -9,7 +9,7 @@ const TestimonialCards = ({ testimonial }: { testimonial: Testimonial }) => {
   const { rating, title, description, author, membership } = testimonial
   const starRating = Array.from({ length: rating })
   return (
-    <div className="py-6 px-4 rounded-lg bg-white shadow-xl">
+    <div className="py-6 px-4 rounded-lg flex flex-col bg-white shadow-xl">
       <div className="flex gap-1">
         {starRating.map((_, index) => (
           <div className="relative h-4 w-4" key={`star${index}`}>
@@ -25,7 +25,7 @@ const TestimonialCards = ({ testimonial }: { testimonial: Testimonial }) => {
         ))}
       </div>
       <h1 className="font-bold text-sm my-4">{title}</h1>
-      <p className="font-thin">{description}</p>
+      <p className="font-thin flex-1">{description}</p>
       <div className="flex mt-8">
         <p className="text-custom_primary text-xs font-bold">{author}</p>
         <p className="text-xs">
