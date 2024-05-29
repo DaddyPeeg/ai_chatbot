@@ -8,7 +8,7 @@ import React from 'react'
 const Page_3 = () => {
   return (
     <Wrapper>
-      <div className="pb-16 flex justify-center items-center flex-col gap-16">
+      <div className="py-16 flex justify-center items-center flex-col gap-16">
         <div className="flex flex-col md:flex-row justify-center gap-24">
           <div className="relative w-[20rem] order-2 md:order-none h-[20rem]">
             <Image

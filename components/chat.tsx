@@ -53,7 +53,7 @@ export function Chat({ className, session }: ChatProps) {
         toast.error(res.message)
         return
       }
-
+      setAiState((prevState: any) => ({ ...prevState, connection: 'true' }))
       setItem('chatID', res.chatID)
 
       const local_storage_items = getItem('chat-thread-history', 'local')
@@ -62,7 +62,6 @@ export function Chat({ className, session }: ChatProps) {
       if (res.chatID === storage_chat_history.chatID) {
         setMessages(prev => [...prev, ...storage_chat_history.messages])
       }
-      setAiState((prevState: any) => ({ ...prevState, connection: 'true' }))
     })()
 
     hasRunEffect.current = true
