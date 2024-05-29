@@ -23,7 +23,6 @@ export function ButtonScrollToBottom({
 
   React.useEffect(() => {
     if (isAtBottom) return
-    console.log('wew')
     scrollToBottom()
   }, [messages.length])
 

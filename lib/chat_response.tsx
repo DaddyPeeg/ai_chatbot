@@ -55,7 +55,6 @@ export async function fetchDataWithAbort(
         }
         try {
           const parsedChunk = JSON.parse(decodedChunk)
-          console.log(parsedChunk)
           if (
             parsedChunk?.type === 'node' &&
             parsedChunk?.data === '5750nqz7'
@@ -162,7 +161,6 @@ export async function fetchDataWithAbort(
     setMessages((prevMessage: any) => {
       const newMessage = prevMessage.map((m: any) => {
         if (m.id === nanoID && m.display === '') {
-          console.log('run')
           return {
             ...m,
             status: false
