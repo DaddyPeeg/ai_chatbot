@@ -14,7 +14,7 @@ const WhyChooseUs = () => {
           <div className="h-full justify-center flex flex-col lg:flex-row">
             <div className="lg:h-full lg:flex-1 flex flex-col gap-4 lg:gap-0">
               <h1 className="font-avenirnextltproregular max-w-md lg:flex-1 text-white text-[6vw] leading-[6vw] sm:text-4xl lg:mt-8">
-                We understand that everyone's insurance needs are unique.
+                We understand that everyone&lsquo;s insurance needs are unique.
               </h1>
               <div className="mb-4 lg:mb-8">
                 <Button
