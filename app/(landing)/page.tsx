@@ -5,6 +5,8 @@ import Testimonials from './components/Testimonials'
 import Page_3 from './components/Page_3'
 import WhyChooseUs from './components/WhyChooseUs'
 import AboutUs from './components/AboutUs'
+import Footer from './components/Footer'
+import { Header } from '@/components/newheader'
 
 export default function LandingPage() {
   return (
@@ -26,6 +28,7 @@ export default function LandingPage() {
       <Testimonials />
       <Page_3 />
       <WhyChooseUs />
+      <Footer />
     </div>
   )
 }
