@@ -20,7 +20,7 @@ const AboutUs = () => {
       <Wrapper>
         <div className="flex flex-col md:flex-row gap-8">
           <div className="md:w-[50%] flex flex-col justify-center">
-            <h1 className="font-avenirnextltproregular text-6xl max-w-lg ">
+            <h1 className="font-avenirnextltproregular text-5xl max-w-lg ">
               Here, we strive to protect what&lsquo;s important.
             </h1>
             <p className="mt-8 max-w-sm">
