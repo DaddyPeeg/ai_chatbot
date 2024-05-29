@@ -92,6 +92,7 @@ const Hero = () => {
                 loop
                 autoPlay
                 playsInline
+                preload="none"
                 muted
                 className="-z-1 absolute top-16 left-6 w-60"
               />

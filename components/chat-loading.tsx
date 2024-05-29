@@ -16,6 +16,7 @@ const ChatLoading = () => {
           width={150}
           height={150}
           className="animate-pulse mt-4"
+          priority
         />
       </div>
     </div>
