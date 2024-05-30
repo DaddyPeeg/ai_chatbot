@@ -3,21 +3,21 @@
 import * as React from 'react'
 
 import { useSidebar } from '@/lib/hooks/use-sidebar'
-import { Button } from '@/components/ui/button'
-import { IconSidebar } from '@/components/ui/icons'
+import { Button } from '@/components/ui/button2'
+import { DoubleArrowRightIcon, HamburgerMenuIcon } from '@radix-ui/react-icons'
 
 export function SidebarToggle() {
-  const { toggleSidebar } = useSidebar()
+  const { toggleMobileSidebar } = useSidebar()
 
   return (
     <Button
       variant="ghost"
-      className="-ml-2 hidden size-9 p-0 lg:flex"
+      className="flex px-2 lg:hidden hover:bg-transparent hover:text-white"
       onClick={() => {
-        toggleSidebar()
+        toggleMobileSidebar()
       }}
     >
-      <IconSidebar className="size-6" />
+      <HamburgerMenuIcon height={20} width={20} />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

@@ -18,7 +18,7 @@ export function ChatList({ messages, session, isShared }: ChatList) {
   }
 
   return (
-    <div className="relative mx-auto max-w-2xl px-4">
+    <div className="mx-auto max-w-2xl px-4">
       {messages.map((message: any, index: any) => (
         <div key={message.id}>
           {message.type === 'user' && (

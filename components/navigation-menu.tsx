@@ -59,73 +59,34 @@ export function NavigationMenuComp() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Dropdown 1</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Shop</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-              <li className="row-span-3">
-                <NavigationMenuLink asChild className="">
-                  <Link
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
-                  >
-                    <Image src={ChatBotIcon} alt="chat-bot-icon-nav" />
-                    <div className="mb-2 mt-4 text-lg font-medium">
-                      Lorem, ipsum.
-                    </div>
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Dolorem, quos!
-                    </p>
-                  </Link>
-                </NavigationMenuLink>
-              </li>
-              <ListItem href="" title="Reliable Service">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Laboriosam, natus.
-              </ListItem>
-              <ListItem href="" title="Receives Latest Updates">
-                Lorem ipsum dolor sit amet consectetur.
-              </ListItem>
-              <ListItem href="" title="Easy to use">
-                Lorem ipsum dolor sit amet.
-              </ListItem>
+            <ul className="md:w-[200px] lg:w-[250px] flex flex-col px-4 py-4">
+              <ListItem href="" title="Reliable Service" />
+              <ListItem href="" title="Receives Latest Updates" />
+              <ListItem href="" title="Easy to use" />
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        {/* <NavigationMenuItem>
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map(component => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem> */}
+
         <NavigationMenuItem>
           <Link href="" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Nav1
+              Home
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Nav2
+              Insurance Guide
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Nav3
+              Press
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -150,9 +111,11 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground group-hover:text-custom_primary-foreground/60">
-            {children}
-          </p>
+          {children && (
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground group-hover:text-custom_primary-foreground/60">
+              {children}
+            </p>
+          )}
         </a>
       </NavigationMenuLink>
     </li>

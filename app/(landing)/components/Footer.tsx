@@ -28,7 +28,7 @@ const Footer = () => {
                 Healthcare Chat Bot
               </h1>
               <p className="text-xs sm:text-sm">
-                © 2024 Company Name. All rights reserved.{' '}
+                © 2024 Company Name. All rights reserved.
               </p>
             </div>
           </div>

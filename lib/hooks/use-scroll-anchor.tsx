@@ -7,7 +7,6 @@ export const useScrollAnchor = () => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const visibilityRef = useRef<HTMLDivElement>(null)
 
-
   const [isAtBottom, setIsAtBottom] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -18,16 +17,7 @@ export const useScrollAnchor = () => {
         behavior: 'smooth'
       })
     }
-  }, [messagesRef.current, scrollRef.current, visibilityRef.current])
-
-  const scrollToBottomNew = useCallback(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollIntoView({
-        block: 'end',
-        behavior: 'smooth'
-      })
-    }
-  }, [messagesRef.current, scrollRef.current, visibilityRef.current])
+  }, [messagesRef.current])
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -37,13 +27,7 @@ export const useScrollAnchor = () => {
         })
       }
     }
-  }, [
-    isAtBottom,
-    isVisible,
-    messagesRef.current,
-    scrollRef.current,
-    visibilityRef.current
-  ])
+  }, [isAtBottom, isVisible, messagesRef.current])
 
   useEffect(() => {
     const { current } = scrollRef
@@ -66,7 +50,7 @@ export const useScrollAnchor = () => {
         current.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [messagesRef.current, scrollRef.current, visibilityRef.current])
+  }, [scrollRef.current])
 
   useEffect(() => {
     if (visibilityRef.current) {

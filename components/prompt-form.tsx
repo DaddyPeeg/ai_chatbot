@@ -3,12 +3,11 @@
 import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 
-import { useActions, useAIState, useUIState } from 'ai/rsc'
+import { useAIState, useUIState } from 'ai/rsc'
 
-import { BotMessage, UserMessage } from './stocks/message'
 import { type AI } from '@/lib/chat/actions'
-import { Button } from '@/components/ui/button'
-import { IconArrowElbow, IconPlus, IconStop } from '@/components/ui/icons'
+import { Button } from '@/components/ui/button2'
+import { IconArrowElbow, IconStop } from '@/components/ui/icons'
 import {
   Tooltip,
   TooltipContent,
@@ -16,10 +15,9 @@ import {
 } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
-import { useRouter } from 'next/navigation'
+
 import useStorage from '@/lib/hooks/use-storage'
 import { fetchDataWithAbort } from '@/lib/chat_response'
-import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 
 export function PromptForm({
   input,
@@ -38,7 +36,6 @@ export function PromptForm({
   isAtBottom: boolean
   scrollToBottom: () => void
 }) {
-  const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const [messages, setMessages] = useUIState<typeof AI>()
@@ -122,31 +119,13 @@ export function PromptForm({
         )
       }}
     >
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
-              onClick={() => {
-                removeItem('chat_thread', 'session')
-                removeItem('chat-thread-history', 'local')
-                router.push('/new')
-              }}
-            >
-              <IconPlus />
-              <span className="sr-only">New Chat</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
-        </Tooltip>
+      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background sm:rounded-md ">
         <Textarea
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
           placeholder="Send a message."
-          className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+          className="w-full sm:border py-[1.23rem] resize-none bg-transparent pr-14 pl-4 focus-within:outline-none text-sm"
           autoFocus
           spellCheck={false}
           autoComplete="off"
@@ -156,11 +135,16 @@ export function PromptForm({
           value={input}
           onChange={e => setInput(e.target.value)}
         />
-        <div className="absolute right-0 top-[13px] sm:right-4">
+        <div className="absolute right-4 bottom-[13px]">
           {!aiState.isChatting ? (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button type="submit" size="icon" disabled={input === ''}>
+                <Button
+                  className="bg-custom_secondary"
+                  type="submit"
+                  size="icon"
+                  disabled={input === ''}
+                >
                   <IconArrowElbow />
                   <span className="sr-only">Send message</span>
                 </Button>
@@ -171,6 +155,7 @@ export function PromptForm({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  className="bg-custom_secondary"
                   type="button"
                   size="icon"
                   // onClick={() => abortButtonHandler()}

@@ -7,7 +7,9 @@ const LOCAL_STORAGE_KEY = 'sidebar'
 interface SidebarContext {
   isSidebarOpen: boolean
   toggleSidebar: () => void
+  toggleMobileSidebar: () => void
   isLoading: boolean
+  isSidebarMobileOpen: boolean
 }
 
 const SidebarContext = React.createContext<SidebarContext | undefined>(
@@ -29,6 +31,7 @@ interface SidebarProviderProps {
 export function SidebarProvider({ children }: SidebarProviderProps) {
   const [isSidebarOpen, setSidebarOpen] = React.useState(true)
   const [isLoading, setLoading] = React.useState(true)
+  const [isSidebarMobileOpen, setIsSidebarMobileOpen] = React.useState(false)
 
   React.useEffect(() => {
     const value = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -45,6 +48,13 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
       return newState
     })
   }
+  const toggleMobileSidebar = () => {
+    setIsSidebarMobileOpen(value => {
+      const newState = !value
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
+      return newState
+    })
+  }
 
   if (isLoading) {
     return null
@@ -52,7 +62,13 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
 
   return (
     <SidebarContext.Provider
-      value={{ isSidebarOpen, toggleSidebar, isLoading }}
+      value={{
+        isSidebarOpen,
+        toggleMobileSidebar,
+        toggleSidebar,
+        isLoading,
+        isSidebarMobileOpen
+      }}
     >
       {children}
     </SidebarContext.Provider>
