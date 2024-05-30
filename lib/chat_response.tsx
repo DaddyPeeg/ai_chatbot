@@ -1,4 +1,5 @@
 import { ReactElement } from 'react'
+import { toast } from 'sonner'
 
 export async function fetchDataWithAbort(
   // signal: any,
@@ -24,6 +25,15 @@ export async function fetchDataWithAbort(
       }
     )
     if (!chat.ok) {
+      const newDD = await chat.json()
+
+      if (
+        newDD &&
+        newDD.error === 'Internal Server Error' &&
+        newDD.message === 'Template not found'
+      ) {
+        toast.error('Chat Template ID not set.')
+      }
       setAiState((prevState: any) => ({ ...prevState, isChatting: false }))
       setMessages((prevMessage: any) => {
         const newMessage = prevMessage.map((m: any) => {
@@ -37,6 +47,7 @@ export async function fetchDataWithAbort(
         })
         return newMessage
       })
+      setIsStreaming(false)
       return
     }
     const reader = chat.body.getReader()

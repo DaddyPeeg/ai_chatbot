@@ -81,6 +81,10 @@ async function getChatThread() {
     )
     if (!init.ok) {
       console.log('Error Fetching Data')
+      return {
+        message: 'There was something wrong with the network connection',
+        ok: false
+      }
     }
     const res = init.json()
     return res

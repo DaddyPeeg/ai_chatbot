@@ -66,6 +66,20 @@
   }
 }
 
+@layer components {
+  .new_bg {
+    background-color: #e5e5f7;
+    opacity: 1;
+    background: repeating-linear-gradient(
+      45deg,
+      #f9f9fc,
+      #f9f9fc 14.5px,
+      #e5e5f7 14.5px,
+      #e5e5f7 72.5px
+    );
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

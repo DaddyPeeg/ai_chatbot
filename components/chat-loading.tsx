@@ -4,7 +4,7 @@ import { ChatBotIcon } from '@/public/assets'
 
 const ChatLoading = () => {
   return (
-    <div className="w-full h-dvh flex justify-center items-center">
+    <div className="w-full fixed z-50 h-dvh flex justify-center items-center">
       <div className="flex flex-col items-center">
         <h1 className="font-avenirnextltproregular text-3xl">
           Healthcare Chat Bot

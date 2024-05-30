@@ -91,7 +91,7 @@ export function ChatPanel({
         />
       </div>
       <div className="sm:px-4 sm:max-w-2xl w-full">
-        {messages.length === 0 && (
+        {(messages.length === 1 || messages.length === 0) && (
           <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
             {exampleMessages.map((example, index) => (
               <div

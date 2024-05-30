@@ -14,7 +14,8 @@ import { toast } from 'sonner'
 import useStorage from '@/lib/hooks/use-storage'
 import ChatLoading from './chat-loading'
 import ChatFailed from './ui/chat-failed'
-import { Header } from './newheader'
+import { Header } from './header-chat'
+import { nanoid } from 'nanoid'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -78,18 +79,38 @@ export function Chat({ className, session }: ChatProps) {
     ) {
       setAiState(prevState => ({ ...prevState, connection: 'true' }))
     }
+
     if (
       !threadID ||
-      !local_storage_items ||
       aiState.connection === 'false' ||
       aiState.connection === 'loading'
     ) {
       return
     }
+    if (messages.length === 0 && !local_storage_items) {
+      setMessages(currentMessages => [
+        ...currentMessages,
+        {
+          id: nanoid(),
+          display:
+            'Hello there! 👋 Welcome to your virtual healthcare assistant. I am here to provide support, answer your questions, and help you stay on track with your health goals. What can I assist you with today?',
+          type: 'bot',
+          status: true
+        }
+      ])
+      setItem(
+        'chat-thread-history',
+        JSON.stringify({ chatID: threadID, messages: [...messages] }),
+        'local'
+      )
+      return
+    }
     const storage_chat_history = JSON.parse(local_storage_items)
     if (threadID === storage_chat_history.chatID) {
       setMessages(prev => [...prev, ...storage_chat_history.messages])
+      return
     }
+
     hasRunEffect_2.current = true
   }, [hasRunEffect_2.current, aiState.connection])
 
@@ -101,7 +122,6 @@ export function Chat({ className, session }: ChatProps) {
 
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
-
   if (aiState.connection === 'loading') {
     return <ChatLoading />
   }
@@ -113,11 +133,11 @@ export function Chat({ className, session }: ChatProps) {
   if (aiState.connection === 'true')
     return (
       <>
-        <Header chat />
         <div
-          className="group w-full h-[calc(100vh_-_4rem)] mt-16 overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+          className="relative group w-full h-[100vh] overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
           ref={scrollRef}
         >
+          <Header />
           <div
             className={cn('pb-[200px] pt-4 md:pt-10', className)}
             ref={messagesRef}

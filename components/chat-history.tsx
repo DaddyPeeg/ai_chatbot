@@ -6,23 +6,34 @@ import { cn } from '@/lib/utils'
 import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
+import { SidebarToggle } from './sidebar-toggle'
+import { ArrowLeft } from 'lucide-react'
 
 interface ChatHistoryProps {
   userId?: string
 }
 
-export async function ChatHistory({ userId }: ChatHistoryProps) {
+export function ChatHistory({ userId }: ChatHistoryProps) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
+      <Link
+        href="/"
+        className={cn(
+          buttonVariants({ variant: 'ghost' }),
+          'h-10 w-14 mt-1 text-xl rounded-full justify-start px-4 shadow-none '
+        )}
+      >
+        <ArrowLeft />
+      </Link>
       <div className="flex items-center justify-between p-4">
         <h4 className="text-sm font-medium">Chat History</h4>
       </div>
       <div className="mb-2 px-2">
         <Link
-          href="/"
+          href="/new"
           className={cn(
-            buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+            buttonVariants({ variant: 'default' }),
+            'h-10 w-full justify-start px-4 shadow-none text-custom_primary-foreground bg-custom_primary hover:bg-custom_accent'
           )}
         >
           <IconPlus className="-translate-x-2 stroke-2" />
@@ -42,7 +53,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
         }
       >
         {/* @ts-ignore */}
-        <SidebarList userId={userId} />
+        <SidebarList />
       </React.Suspense>
     </div>
   )

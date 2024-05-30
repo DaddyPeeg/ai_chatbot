@@ -80,27 +80,6 @@ export function Header({ chat }: { chat?: boolean }) {
                     <IconPlus className="h-4 w-4 " />
                   </Button>
                 )}
-
-                {/* <div className="sm:hidden flex">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-8 bg-background p-0"
-                        onClick={() => {
-                          removeItem('chat_thread', 'session')
-                          removeItem('chat-thread-history', 'local')
-                          router.push('/new')
-                        }}
-                      >
-                        <IconPlus />
-                        <span className="sr-only">Renew Chat</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>New Chat</TooltipContent>
-                  </Tooltip>
-                      </div> */}
               </div>
 
               {!chat && (

@@ -1,4 +1,6 @@
-import { Header } from '@/components/newheader'
+import { Header } from '@/components/header-chat'
+import { Button } from '@/components/ui/button2'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 interface ChatLayoutProps {
   children: React.ReactNode
