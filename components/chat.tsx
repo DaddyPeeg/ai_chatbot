@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import useStorage from '@/lib/hooks/use-storage'
 import ChatLoading from './chat-loading'
 import ChatFailed from './ui/chat-failed'
+import { Header } from './newheader'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -111,27 +112,34 @@ export function Chat({ className, session }: ChatProps) {
 
   if (aiState.connection === 'true')
     return (
-      <div
-        className="group w-full h-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
-        ref={scrollRef}
-      >
+      <>
+        <Header chat />
         <div
-          className={cn('pb-[200px] pt-4 md:pt-10', className)}
-          ref={messagesRef}
+          className="group w-full h-[calc(100vh_-_4rem)] mt-16 overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+          ref={scrollRef}
         >
-          {messages.length ? (
-            <ChatList messages={messages} isShared={false} session={session} />
-          ) : (
-            <EmptyScreen />
-          )}
-          <div className="h-px w-full" ref={visibilityRef} />
+          <div
+            className={cn('pb-[200px] pt-4 md:pt-10', className)}
+            ref={messagesRef}
+          >
+            {messages.length ? (
+              <ChatList
+                messages={messages}
+                isShared={false}
+                session={session}
+              />
+            ) : (
+              <EmptyScreen />
+            )}
+            <div className="h-px w-full" ref={visibilityRef} />
+          </div>
+          <ChatPanel
+            input={input}
+            setInput={setInput}
+            isAtBottom={isAtBottom}
+            scrollToBottom={scrollToBottom}
+          />
         </div>
-        <ChatPanel
-          input={input}
-          setInput={setInput}
-          isAtBottom={isAtBottom}
-          scrollToBottom={scrollToBottom}
-        />
-      </div>
+      </>
     )
 }

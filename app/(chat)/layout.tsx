@@ -9,12 +9,7 @@ export default async function ChatLayout({ children }: ChatLayoutProps) {
     // h-[calc(100vh_-_theme(spacing.16))]
     // h-[calc(100vh_-_5rem)]
     <>
-      <div className="relative flex flex-col">
-        <Header chat />
-        <div className="h-[calc(100vh_-_4rem)] mt-16 overflow-hidden">
-          {children}
-        </div>
-      </div>
+      <div className="relative flex flex-col overflow-hidden">{children}</div>
     </>
   )
 }
