@@ -3,7 +3,7 @@ import useStorage from '@/lib/hooks/use-storage'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-export default async function NewPage() {
+export default function NewPage() {
   const { removeItem } = useStorage()
   const router = useRouter()
 

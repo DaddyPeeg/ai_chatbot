@@ -111,13 +111,13 @@ export function Header({ chat }: { chat?: boolean }) {
                   <AccordionComp />
                 </div>
                 <Link href="">
-                  <p className="pb-4">Nav1</p>
+                  <p className="pb-4">Home</p>
                 </Link>
                 <Link href="">
-                  <p className="py-4">Nav2</p>
+                  <p className="py-4">Insurance Guide</p>
                 </Link>
                 <Link href="">
-                  <p className="py-4">Nav3</p>
+                  <p className="py-4">Press</p>
                 </Link>
                 <div className="flex items-center gap-2 py-4">
                   <Link href={''}>

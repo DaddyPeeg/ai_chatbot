@@ -10,19 +10,18 @@ export function AccordionComp() {
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">
-        <AccordionTrigger>Dropdown</AccordionTrigger>
+        <AccordionTrigger>
+          <p className="text-base">Shop</p>
+        </AccordionTrigger>
         <AccordionContent>
           <Link href={''}>
-            <p className="pl-8 py-2">Link 1</p>
+            <p className="pl-8">Reliable Service</p>
           </Link>
           <Link href={''}>
-            <p className="pl-8 py-2">Link 2</p>
+            <p className="pl-8 pt-4">Receives Latest Updates</p>
           </Link>
           <Link href={''}>
-            <p className="pl-8 py-2">Link 3</p>
-          </Link>
-          <Link href={''}>
-            <p className="pl-8 py-2">Link 4</p>
+            <p className="pl-8 pt-4">Easy to use</p>
           </Link>
         </AccordionContent>
       </AccordionItem>
