@@ -31,8 +31,6 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const [aiState, setAiState] = useAIState<typeof AI>()
   const [messages, setMessages] = useUIState<typeof AI>()
-  const { submitUserMessage } = useActions()
-  const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
   const { getItem, setItem } = useStorage()
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
@@ -85,16 +83,17 @@ export function ChatPanel({
   ]
 
   return (
-    <div className="fixed inset-x-0 bottom-0 w-full bg-transparent duration-300 ease-in-out animate-in peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]">
-      <ButtonScrollToBottom
-        isAtBottom={isAtBottom}
-        scrollToBottom={scrollToBottom}
-      />
-
-      <div className="mx-auto sm:max-w-2xl sm:px-4">
-        <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
-          {messages.length === 0 &&
-            exampleMessages.map((example, index) => (
+    <div className="fixed items-center flex flex-col inset-x-0 bottom-0 w-full bg-transparent duration-300 ease-in-out animate-in peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px] gap-4">
+      <div className="mx-auto">
+        <ButtonScrollToBottom
+          isAtBottom={isAtBottom}
+          scrollToBottom={scrollToBottom}
+        />
+      </div>
+      <div className="sm:px-4 sm:max-w-2xl w-full">
+        {messages.length === 0 && (
+          <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
+            {exampleMessages.map((example, index) => (
               <div
                 key={example.heading}
                 className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 ${
@@ -102,7 +101,10 @@ export function ChatPanel({
                 }`}
                 onClick={async () => {
                   if (aiState.isChatting) return
-                  setAiState(prevState => ({ ...prevState, isChatting: true }))
+                  setAiState(prevState => ({
+                    ...prevState,
+                    isChatting: true
+                  }))
                   setIsStreaming(true)
                   setMessages(currentMessages => [
                     ...currentMessages,
@@ -147,9 +149,9 @@ export function ChatPanel({
                 </div>
               </div>
             ))}
-        </div>
-
-        <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
+          </div>
+        )}
+        <div className="border-t bg-background sm:px-4 shadow-lg sm:rounded-t-xl sm:border sm:py-4">
           <PromptForm
             input={input}
             setInput={setInput}
@@ -159,7 +161,6 @@ export function ChatPanel({
             isAtBottom={isAtBottom}
             scrollToBottom={scrollToBottom}
           />
-          <FooterText className="hidden sm:block" />
         </div>
       </div>
     </div>
