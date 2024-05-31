@@ -125,7 +125,7 @@ export function PromptForm({
           tabIndex={0}
           onKeyDown={onKeyDown}
           placeholder="Send a message."
-          className="w-full sm:border py-[1.23rem] resize-none bg-transparent pr-14 pl-4 focus-within:outline-none text-sm"
+          className="w-full sm:border py-[1.22rem] overflow-auto resize-none bg-transparent pr-14 pl-4 focus-within:outline-none text-sm"
           autoFocus
           spellCheck={false}
           autoComplete="off"
@@ -135,7 +135,7 @@ export function PromptForm({
           value={input}
           onChange={e => setInput(e.target.value)}
         />
-        <div className="absolute right-4 bottom-[13px]">
+        <div className="absolute right-4 bottom-[0.8rem]">
           {!aiState.isChatting ? (
             <Tooltip>
               <TooltipTrigger asChild>

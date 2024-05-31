@@ -22,7 +22,6 @@ export default async function IndexPage() {
         connection: 'loading'
       }}
     >
-      <SidebarDesktop />
       <Chat id={id} session={session} />
     </AI>
   )

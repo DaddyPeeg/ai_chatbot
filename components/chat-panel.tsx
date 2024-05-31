@@ -83,7 +83,7 @@ export function ChatPanel({
   ]
 
   return (
-    <div className="fixed items-center flex flex-col inset-x-0 bottom-0 w-full bg-transparent duration-300 ease-in-out animate-in peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px] gap-4">
+    <div className="absolute items-center flex flex-col inset-x-0 bottom-0 w-full bg-transparent duration-300 ease-in-out animate-in peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px] gap-4">
       <div className="mx-auto">
         <ButtonScrollToBottom
           isAtBottom={isAtBottom}
