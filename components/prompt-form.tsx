@@ -18,6 +18,7 @@ import { nanoid } from 'nanoid'
 
 import useStorage from '@/lib/hooks/use-storage'
 import { fetchDataWithAbort } from '@/lib/chat_response'
+import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 
 export function PromptForm({
   input,
@@ -40,7 +41,7 @@ export function PromptForm({
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const [messages, setMessages] = useUIState<typeof AI>()
   const [aiState, setAiState] = useAIState<typeof AI>()
-  const { getItem, setItem, removeItem } = useStorage()
+  const { getItem, setItem } = useStorage()
   const [isStreaming, setIsStreaming] = React.useState(true)
   const hasRunEffect = React.useRef(false)
 
