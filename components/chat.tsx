@@ -135,7 +135,6 @@ export function Chat({ className, session }: ChatProps) {
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
 
-  // return <ChatLoading />
   if (aiState.connection === 'loading') {
     return <ChatLoading />
   }
@@ -149,10 +148,10 @@ export function Chat({ className, session }: ChatProps) {
       <>
         {/* <div className="bg-red-500 w-[20rem]"></div> */}
         <SidebarDesktop />
-        <div className="flex relative h-dvh flex-1 flex-col">
+        <div className="flex relative flex-1 flex-col">
           <Header />
           <div
-            className="group w-full h-[calc(100%_-_theme(spacing.36))] overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+            className="group w-full h-[calc(100dvh_-_theme(spacing.36))] overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
             ref={scrollRef}
           >
             <div
