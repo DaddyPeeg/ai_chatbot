@@ -16,6 +16,7 @@ import ChatLoading from './chat-loading'
 import ChatFailed from './ui/chat-failed'
 import { Header } from './header-chat'
 import { nanoid } from 'nanoid'
+import { SidebarDesktop } from './sidebar-desktop'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -87,25 +88,36 @@ export function Chat({ className, session }: ChatProps) {
     ) {
       return
     }
-    if (messages.length === 0 && !local_storage_items) {
+    const storage_chat_history =
+      !!local_storage_items && JSON.parse(local_storage_items)
+
+    if (
+      messages.length === 0 &&
+      (!local_storage_items || storage_chat_history.chatID !== threadID)
+    ) {
+      const object = {
+        id: nanoid(),
+        display:
+          'Hello there! 👋 Welcome to your virtual healthcare assistant. I am here to provide support, answer your questions, and help you stay on track with your health goals. What can I assist you with today?',
+        type: 'bot',
+        status: true
+      }
       setMessages(currentMessages => [
         ...currentMessages,
         {
-          id: nanoid(),
-          display:
-            'Hello there! 👋 Welcome to your virtual healthcare assistant. I am here to provide support, answer your questions, and help you stay on track with your health goals. What can I assist you with today?',
+          id: object.id,
+          display: object.display,
           type: 'bot',
           status: true
         }
       ])
       setItem(
         'chat-thread-history',
-        JSON.stringify({ chatID: threadID, messages: [...messages] }),
+        JSON.stringify({ chatID: threadID, messages: [{ ...object }] }),
         'local'
       )
       return
     }
-    const storage_chat_history = JSON.parse(local_storage_items)
     if (threadID === storage_chat_history.chatID) {
       setMessages(prev => [...prev, ...storage_chat_history.messages])
       return
@@ -122,6 +134,8 @@ export function Chat({ className, session }: ChatProps) {
 
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()
+
+  // return <ChatLoading />
   if (aiState.connection === 'loading') {
     return <ChatLoading />
   }
@@ -133,25 +147,29 @@ export function Chat({ className, session }: ChatProps) {
   if (aiState.connection === 'true')
     return (
       <>
-        <div
-          className="relative group w-full h-[100vh] overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
-          ref={scrollRef}
-        >
+        {/* <div className="bg-red-500 w-[20rem]"></div> */}
+        <SidebarDesktop />
+        <div className="flex relative h-dvh flex-1 flex-col">
           <Header />
           <div
-            className={cn('pb-[200px] pt-4 md:pt-10', className)}
-            ref={messagesRef}
+            className="group w-full h-[calc(100%_-_theme(spacing.36))] overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+            ref={scrollRef}
           >
-            {messages.length ? (
-              <ChatList
-                messages={messages}
-                isShared={false}
-                session={session}
-              />
-            ) : (
-              <EmptyScreen />
-            )}
-            <div className="h-px w-full" ref={visibilityRef} />
+            <div
+              className={cn('pb-[200px] pt-4 md:pt-10', className)}
+              ref={messagesRef}
+            >
+              {messages.length ? (
+                <ChatList
+                  messages={messages}
+                  isShared={false}
+                  session={session}
+                />
+              ) : (
+                <EmptyScreen />
+              )}
+              <div className="h-px w-full" ref={visibilityRef} />
+            </div>
           </div>
           <ChatPanel
             input={input}
