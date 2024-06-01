@@ -85,16 +85,17 @@ const Hero = () => {
                 priority
                 className="z-20"
               />
-              <div className="-z-1 absolute h-[32rem] left-6 top-6 w-[15rem] bg-black" />
+              <div className="-z-1 absolute h-[32rem] left-6 top-6 w-[15rem] bg-white" />
               <video
-                src="https://videos.pexels.com/video-files/5310966/5310966-uhd_2160_3840_25fps.mp4"
+                // src="https://videos.pexels.com/video-files/5310966/5310966-uhd_2160_3840_25fps.mp4"
                 // src="https://assets-global.website-files.com/658327ffca1812dacb451650/658ae91c80fccf87136bdefb_SignUp-transcode.mp4"
+                src="https://res.cloudinary.com/dl4nowlvv/video/upload/f_auto:video,q_auto/zkkmxqqck0scrbgqbdgu"
                 loop
                 autoPlay
                 playsInline
                 preload="none"
                 muted
-                className="-z-1 absolute top-16 left-6 w-60"
+                className="-z-1 absolute top-[27px] left-[23px] w-[240px]"
               />
             </div>
           </div>
